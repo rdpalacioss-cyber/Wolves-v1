@@ -1,1 +1,3401 @@
+<!d<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WOLVES — Bienestar Emocional</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: '#020817',
+            'navy-light': '#0a1628',
+            cyan: '#00d9ff',
+            'cyan-dim': 'rgba(0, 217, 255, 0.15)',
+            glass: 'rgba(8, 24, 55, 0.75)',
+            'glass-border': 'rgba(0, 217, 255, 0.12)',
+            text: '#ffffff',
+            muted: '#9fb4d8',
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --navy: #020817;
+      --navy-light: #0a1628;
+      --cyan: #00d9ff;
+      --cyan-dim: rgba(0,217,255,0.15);
+      --glass: rgba(8,24,55,0.75);
+      --glass-border: rgba(0,217,255,0.12);
+      --text: #ffffff;
+      --muted: #9fb4d8;
+    }
+    * { box-sizing: border-box; scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; margin: 0; background: var(--navy); color: var(--text); overflow-x: hidden; }
+    
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--navy-light); }
+    ::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--cyan); }
+
+    .glass { background: var(--glass); border: 1px solid var(--glass-border); backdrop-filter: blur(12px); border-radius: 16px; }
+    .glass-sm { background: var(--glass); border: 1px solid var(--glass-border); backdrop-filter: blur(8px); border-radius: 12px; }
+    .glow { box-shadow: 0 0 20px rgba(0,217,255,0.25); }
+    .glow-hover:hover { box-shadow: 0 0 24px rgba(0,217,255,0.35); border-color: var(--cyan); transform: translateY(-2px); }
+    
+    .btn-cyan { background: linear-gradient(135deg, #00d9ff, #00b8d4); color: #020817; font-weight: 700; border: none; border-radius: 12px; padding: 14px 32px; cursor: pointer; transition: all 0.3s; font-size: 0.95rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-cyan:hover { transform: translateY(-2px); box-shadow: 0 4px 24px rgba(0,217,255,0.4); }
+    .btn-cyan:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    
+    .btn-outline { background: transparent; border: 2px solid var(--cyan); color: var(--cyan); border-radius: 12px; padding: 13px 32px; cursor: pointer; transition: all 0.3s; font-weight: 600; font-size: 0.95rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-outline:hover { background: rgba(0,217,255,0.1); }
+    
+    .sidebar { width: 240px; position: fixed; top: 0; left: 0; height: 100%; background: var(--navy-light); border-right: 1px solid var(--glass-border); z-index: 50; overflow-y: auto; transition: transform 0.3s; }
+    .sidebar-link { display: flex; align-items: center; gap: 12px; padding: 11px 20px; color: var(--muted); text-decoration: none; border-radius: 10px; margin: 2px 12px; transition: all 0.2s; cursor: pointer; font-size: 0.9rem; }
+    .sidebar-link:hover, .sidebar-link.active { background: var(--cyan-dim); color: var(--cyan); }
+    
+    .topbar { position: fixed; top: 0; left: 240px; right: 0; height: 60px; background: var(--navy-light); border-bottom: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 40; }
+    .main-content { margin-left: 240px; margin-top: 60px; padding: 28px; min-height: calc(100vh - 60px); transition: margin-left 0.3s; }
+    
+    .section { display: none; }
+    .section.active { display: block; animation: fadeIn 0.4s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .emotion-card { cursor: pointer; transition: all 0.3s; }
+    .emotion-card:hover, .emotion-card.selected { border-color: var(--cyan); box-shadow: 0 0 16px rgba(0,217,255,0.3); transform: scale(1.03); }
+    
+    .emotion-card-wrapper input[type="radio"]:checked + label { border-color: var(--cyan) !important; box-shadow: 0 0 20px rgba(0,217,255,0.4) !important; background: rgba(0, 217, 255, 0.05); }
+    .emotion-card-wrapper input[type="radio"]:checked + label .radio-indicator { background: var(--cyan) !important; opacity: 1 !important; }
+    
+    .chat-bubble { padding: 12px 16px; border-radius: 12px; max-width: 80%; margin-bottom: 10px; font-size: 0.9rem; line-height: 1.5; word-break: break-word; }
+    .chat-bot { background: rgba(0,217,255,0.08); border: 1px solid rgba(0,217,255,0.2); align-self: flex-start; }
+    .chat-user { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); align-self: flex-end; margin-left: auto; }
+    
+    .progress-bar { background: rgba(255,255,255,0.08); border-radius: 999px; height: 6px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #00d9ff, #00b8d4); border-radius: 999px; transition: width 0.5s ease-in-out; }
+    .metric-value { font-size: 1.8rem; font-weight: 800; color: var(--cyan); }
+    
+    .table-wolves { width: 100%; border-collapse: collapse; }
+    .table-wolves th { text-align: left; padding: 12px 16px; color: var(--muted); font-size: 0.75rem; text-transform: uppercase; border-bottom: 1px solid var(--glass-border); }
+    .table-wolves td { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem; }
+    
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 600; }
+    .badge-red { background: rgba(255,71,87,0.2); color: #ff4757; }
+    .badge-yellow { background: rgba(255,193,7,0.2); color: #ffc107; }
+    .badge-green { background: rgba(0,230,118,0.2); color: #00e676; }
+    .badge-blue { background: rgba(0, 217, 255, 0.2); color: #00d9ff; }
+
+    .hamburger { display: none; position: fixed; top: 14px; left: 14px; z-index: 60; background: var(--navy-light); border: 1px solid var(--glass-border); border-radius: 8px; padding: 8px; cursor: pointer; color: var(--cyan); }
+    .hero-circle { position: absolute; width: 280px; height: 280px; border-radius: 50%; border: 1px solid rgba(0,217,255,0.15); top: 50%; left: 50%; transform: translate(-50%,-50%); }
+    .hero-circle::before { content: ''; position: absolute; inset: -20px; border-radius: 50%; border: 1px dashed rgba(0,217,255,0.08); }
+    
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    .float-icon { animation: float 3s ease-in-out infinite; position: absolute; font-size: 1.5rem; }
+    
+    /* Interactive breathing circle styling */
+    .breathing-circle-outer { width: 200px; height: 200px; border-radius: 50%; background: rgba(0, 217, 255, 0.03); border: 2px dashed rgba(0, 217, 255, 0.3); display: flex; align-items: center; justify-content: center; transition: all 4s ease-in-out; margin: 0 auto; }
+    .breathing-circle-inner { width: 100px; height: 100px; border-radius: 50%; background: radial-gradient(circle, rgba(0,217,255,0.6) 0%, rgba(0,184,212,0.1) 100%); transition: all 4s ease-in-out; box-shadow: 0 0 30px rgba(0, 217, 255, 0.4); }
+    
+    .breathing-inhale .breathing-circle-outer { transform: scale(1.3); background: rgba(0, 217, 255, 0.1); border-color: rgba(0, 217, 255, 0.8); }
+    .breathing-inhale .breathing-circle-inner { transform: scale(1.6); box-shadow: 0 0 50px rgba(0, 217, 255, 0.8); }
+    .breathing-hold .breathing-circle-outer { transform: scale(1.3); background: rgba(168, 85, 247, 0.15); border-color: rgba(168, 85, 247, 0.8); }
+    .breathing-hold .breathing-circle-inner { transform: scale(1.6); background: radial-gradient(circle, rgba(168,85,247,0.7) 0%, rgba(168,85,247,0.1) 100%); box-shadow: 0 0 50px rgba(168, 85, 247, 0.8); }
+    .breathing-exhale .breathing-circle-outer { transform: scale(0.95); }
+    .breathing-exhale .breathing-circle-inner { transform: scale(0.8); }
+
+    /* Modal Styling */
+    .modal-backdrop { background: rgba(2, 8, 23, 0.85); backdrop-filter: blur(8px); }
+
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .topbar { left: 0; }
+      .main-content { margin-left: 0; padding: 16px; }
+      .hamburger { display: block; }
+    }
+  </style>
+</head>
+<body style="background: rgb(2, 8, 23);">
+
+  <!-- Hamburger Button -->
+  <button class="hamburger" id="hamburger" aria-label="Abrir menú" onclick="toggleSidebar()">
+    <i data-lucide="menu" style="width:22px;height:22px"></i>
+  </button>
+
+  <!-- Sidebar Navigation -->
+  <nav class="sidebar" id="sidebar" aria-label="Navegación principal">
+    <div class="p-5 text-center border-b border-white/10">
+      <!-- High Quality SVG Wolf Logo Fallback -->
+      <div class="w-16 h-16 mx-auto mb-2 relative flex items-center justify-center bg-gradient-to-br from-cyan-400 to-blue-600 rounded-2xl glow">
+        <svg class="w-11 h-11 text-navy" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2L2 9l3 11 7 3 7-3 3-11-10-7zm4.5 13.5L12 18l-4.5-2.5V11L12 9l4.5 2v4.5z"/>
+        </svg>
+      </div>
+      <div class="text-xl font-bold tracking-wider" style="color:var(--cyan)">WOLVES</div>
+      <div class="text-xs mt-1" style="color:var(--muted)">Bienestar Emocional</div>
+    </div>
+    
+    <div class="py-3">
+      <div class="sidebar-link active" data-page="inicio" onclick="navigate('inicio')">
+        <i data-lucide="home" style="width:17px;height:17px"></i> Inicio
+      </div>
+      <div class="sidebar-link" data-page="moodcheck" onclick="navigate('moodcheck')">
+        <i data-lucide="heart" style="width:17px;height:17px"></i> Mood Check
+      </div>
+      <div class="sidebar-link" data-page="wolfai" onclick="navigate('wolfai')">
+        <i data-lucide="bot" style="width:17px;height:17px"></i> Wolf AI
+      </div>
+      <div class="sidebar-link" data-page="retos" onclick="navigate('retos')">
+        <i data-lucide="target" style="width:17px;height:17px"></i> Retos
+      </div>
+      <div class="sidebar-link" data-page="wallet" onclick="navigate('wallet')">
+        <i data-lucide="wallet" style="width:17px;height:17px"></i> Wallet
+      </div>
+      <div class="sidebar-link" data-page="paneldece" onclick="navigate('paneldece')">
+        <i data-lucide="shield" style="width:17px;height:17px"></i> Panel DECE
+      </div>
+      <div class="sidebar-link" data-page="tienda" onclick="navigate('tienda')">
+        <i data-lucide="shopping-bag" style="width:17px;height:17px"></i> Tienda
+      </div>
+      <div class="sidebar-link" data-page="proyeccion" onclick="navigate('proyeccion')">
+        <i data-lucide="bar-chart-2" style="width:17px;height:17px"></i> Proyección
+      </div>
+      <div class="sidebar-link" data-page="equipo" onclick="navigate('equipo')">
+        <i data-lucide="users" style="width:17px;height:17px"></i> Mi Manada
+      </div>
+    </div>
+
+    <!-- Info Pack Banner -->
+    <div class="px-4 pb-4 border-t border-white/10 mt-6 pt-6">
+      <div class="glass p-4 text-center" style="border-left:3px solid var(--cyan)">
+        <p class="text-sm font-bold mb-2" style="color:var(--cyan)">JUNTOS SOMOS<br>MÁS FUERTES</p>
+        <p class="text-xs mb-3" style="color:var(--muted)">Cada emoción cuenta, cada elección importa, cada logro te impulsa.</p>
+        <div class="w-10 h-10 mx-auto rounded-full bg-cyan-dim flex items-center justify-center text-cyan">🐺</div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Topbar Header -->
+  <header class="topbar">
+    <div class="flex items-center gap-3">
+      <span class="text-sm ml-12 md:ml-0" style="color: rgb(159, 180, 216);">¡Hola, Estudiante!</span>
+      <span class="badge badge-green">● Manada activa</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="glass-sm px-3 py-1.5 flex items-center gap-2 text-sm">
+        <span style="color:var(--cyan)">⚡</span>
+        <span id="topbar-coins" class="font-bold text-white">1250</span>
+        <span class="text-xs text-muted">Eight-Coins</span>
+      </div>
+      <div class="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-xs font-bold text-white shadow-md">
+        E
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Space -->
+  <main class="main-content">
+
+    <!-- SECTION: INICIO -->
+    <section class="section active" id="page-inicio">
+      <div class="grid md:grid-cols-2 gap-8 mb-10 items-center">
+        <div>
+          <h1 class="text-3xl md:text-4xl font-extrabold leading-tight mb-4 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
+            BIENESTAR QUE<br>PROTEGE LA MANADA
+          </h1>
+          <p class="mb-6 text-muted">
+            Wolves te acompaña cada día para que reconozcas, entiendas y fortalezcas tus emociones, impulsando el apoyo mutuo y la resiliencia estudiantil.
+          </p>
+          <div class="grid grid-cols-2 gap-3 mb-6">
+            <div class="glass-sm p-3">
+              <div class="text-sm font-bold mb-1 text-white">🧠 IA Emocional</div>
+              <div class="text-xs text-muted">Wolf AI te escucha y te orienta con empatía.</div>
+            </div>
+            <div class="glass-sm p-3">
+              <div class="text-sm font-bold mb-1 text-white">🛡️ Prevención</div>
+              <div class="text-xs text-muted">Acompañamos a quienes necesitan apoyo del DECE.</div>
+            </div>
+            <div class="glass-sm p-3">
+              <div class="text-sm font-bold mb-1 text-white">🏆 Recompensas</div>
+              <div class="text-xs text-muted">Gana Eight-Coins por mantener hábitos saludables.</div>
+            </div>
+            <div class="glass-sm p-3">
+              <div class="text-sm font-bold mb-1 text-white">🤝 Convivencia</div>
+              <div class="text-xs text-muted">Retos grupales para construir unión y empatía.</div>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-3 mb-4">
+            <button class="btn-cyan shadow-lg" onclick="navigate('moodcheck')">
+              <i data-lucide="heart" style="width:16px;height:16px"></i> INICIAR MOOD CHECK
+            </button>
+            <button class="btn-outline" onclick="navigate('wolfai')">
+              <i data-lucide="bot" style="width:16px;height:16px"></i> HABLAR CON WOLF AI
+            </button>
+          </div>
+          <p class="text-xs flex items-center gap-1 text-muted">
+            <i data-lucide="lock" style="width:12px;height:12px" class="text-cyan"></i> 
+            Tu privacidad es nuestra prioridad absoluta. Toda la información personal está cifrada y protegida.
+          </p>
+        </div>
+        
+        <!-- Interactive Cyber-Wolf Mascot Side Panel -->
+        <div class="relative flex items-center justify-center min-h-[400px]">
+          <div class="hero-circle"></div>
+          <!-- Animated Custom SVG Cyber Wolf -->
+          <div class="relative z-10 w-72 h-72 md:w-80 md:h-80 bg-gradient-to-tr from-slate-900 to-cyan-950 rounded-full flex items-center justify-center shadow-2xl glow border border-cyan-500/20 overflow-hidden">
+            <svg class="w-48 h-48 text-cyan animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="rgba(0, 217, 255, 0.1)"/>
+              <circle cx="9" cy="12" r="1.5" fill="var(--cyan)"/>
+              <circle cx="15" cy="12" r="1.5" fill="var(--cyan)"/>
+              <path d="M12 15s1-1.5 2-1.5c1 0 1 .5 1 .5" stroke-linecap="round"/>
+              <path d="M12 15s-1-1.5-2-1.5c-1 0-1 .5-1 .5" stroke-linecap="round"/>
+              <path d="M12 15v2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="glass-sm p-3 absolute bottom-2 right-4 z-20 max-w-[190px] glow animate-bounce">
+            <p class="text-xs font-bold text-cyan">Hola, soy Wolf AI 🐺</p>
+            <p class="text-xs text-muted">Te guiaré hoy en tu bienestar mental.</p>
+          </div>
+          <span class="float-icon text-xl" style="top:15%;left:10%;animation-delay:0s">❤️</span>
+          <span class="float-icon text-xl" style="top:20%;right:15%;animation-delay:0.5s">😊</span>
+          <span class="float-icon text-xl" style="bottom:20%;left:15%;animation-delay:1s">🛡️</span>
+          <span class="float-icon text-xl" style="bottom:15%;right:10%;animation-delay:1.5s">🪙</span>
+        </div>
+      </div>
+
+      <!-- Quick Access Modules -->
+      <h2 class="text-xl font-bold mb-4 text-cyan">Acceso Rápido</h2>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-10">
+        <div class="glass p-4 text-center cursor-pointer transition glow-hover" onclick="navigate('moodcheck')">
+          <div class="text-2xl mb-2">❤️</div>
+          <div class="font-semibold text-sm mb-1">Mood Check</div>
+          <div class="text-xs text-muted">Registra cómo te sientes hoy.</div>
+          <div class="mt-2 text-xs text-cyan">→</div>
+        </div>
+        <div class="glass p-4 text-center cursor-pointer transition glow-hover" onclick="navigate('wolfai')">
+          <div class="text-2xl mb-2">🤖</div>
+          <div class="font-semibold text-sm mb-1">Wolf AI</div>
+          <div class="text-xs text-muted">Tu asistente de inteligencia emocional.</div>
+          <div class="mt-2 text-xs text-cyan">→</div>
+        </div>
+        <div class="glass p-4 text-center cursor-pointer transition glow-hover" onclick="navigate('retos')">
+          <div class="text-2xl mb-2">🎯</div>
+          <div class="font-semibold text-sm mb-1">Retos</div>
+          <div class="text-xs text-muted">Completa hábitos saludables.</div>
+          <div class="mt-2 text-xs text-cyan">→</div>
+        </div>
+        <div class="glass p-4 text-center cursor-pointer transition glow-hover" onclick="navigate('wallet')">
+          <div class="text-2xl mb-2">💰</div>
+          <div class="font-semibold text-sm mb-1">Wallet</div>
+          <div class="text-xs text-muted">Monedas acumuladas e historial.</div>
+          <div class="mt-2 text-xs text-cyan">→</div>
+        </div>
+        <div class="glass p-4 text-center cursor-pointer transition glow-hover" onclick="navigate('paneldece')">
+          <div class="text-2xl mb-2">🛡️</div>
+          <div class="font-semibold text-sm mb-1">Panel DECE</div>
+          <div class="text-xs text-muted">Modulo para consejeros y tutores.</div>
+          <div class="mt-2 text-xs text-cyan">→</div>
+        </div>
+        <div class="glass p-4 text-center cursor-pointer transition glow-hover" onclick="navigate('tienda')">
+          <div class="text-2xl mb-2">🛒</div>
+          <div class="font-semibold text-sm mb-1">Tienda</div>
+          <div class="text-xs text-muted">Canjea tus Eight-Coins por premios.</div>
+          <div class="mt-2 text-xs text-cyan">→</div>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Grid -->
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div class="glass p-4 text-center">
+          <div class="metric-value" id="stat-students">412</div>
+          <div class="text-xs mt-1 text-muted">Estudiantes en la manada</div>
+        </div>
+        <div class="glass p-4 text-center">
+          <div class="metric-value" id="stat-alerts">2</div>
+          <div class="text-xs mt-1 text-muted">Alertas preventivas hoy</div>
+        </div>
+        <div class="glass p-4 text-center">
+          <div class="metric-value" id="stat-coins">1.250</div>
+          <div class="text-xs mt-1 text-muted">Eight-Coins ganadas</div>
+        </div>
+        <div class="glass p-4 text-center">
+          <div class="metric-value">98.4%</div>
+          <div class="text-xs mt-1 text-muted">Participación general</div>
+        </div>
+        <div class="glass p-4 text-center col-span-2 md:col-span-1 border-l-4 border-cyan">
+          <div class="text-xs font-bold text-cyan">MANADA PROTEGIDA</div>
+          <div class="text-[11px] mt-1 text-muted">Construyendo empatía para erradicar el acoso y la ansiedad escolar.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: MOOD CHECK -->
+    <section class="section" id="page-moodcheck">
+      <h1 class="text-3xl font-bold mb-2 text-cyan">Registra tu Emoción Hoy</h1>
+      <p class="mb-8 text-muted">¿Cómo te sientes en este momento? Tu registro diario ayuda a comprender la salud emocional colectiva.</p>
+      
+      <!-- Interactive Grid of Emotions with dynamic SVGs representing Wolf Expressions -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-8" id="emotion-grid">
+        
+        <!-- Happy Mood -->
+        <div class="emotion-card-wrapper">
+          <input type="radio" name="emotion" id="emotion-alegre" value="alegre" class="hidden">
+          <label for="emotion-alegre" class="block glass p-5 text-center transition emotion-card border-2 border-green-500/20">
+            <div class="flex justify-center mb-3">
+              <div class="w-5 h-5 rounded-full border-2 border-emerald-400 flex items-center justify-center">
+                <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 opacity-0 radio-indicator transition-all"></div>
+              </div>
+            </div>
+            <!-- Custom Happy Wolf SVG -->
+            <svg class="w-24 h-24 mx-auto mb-3 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 2l1.5 5h5.5l-4 3 2 6.5-5-4.5-5 4.5 2-6.5-4-3h5.5z"/>
+              <circle cx="8" cy="11" r="1.5" fill="currentColor"/>
+              <circle cx="16" cy="11" r="1.5" fill="currentColor"/>
+              <path d="M9 15c1.5 1.5 4.5 1.5 6 0" stroke-linecap="round"/>
+            </svg>
+            <div class="font-bold text-sm mb-1 text-emerald-400">Alegre</div>
+            <div class="text-xs text-muted">Lleno de energía y positivismo.</div>
+          </label>
+        </div>
+
+        <!-- Calm Mood -->
+        <div class="emotion-card-wrapper">
+          <input type="radio" name="emotion" id="emotion-tranquilo" value="tranquilo" class="hidden">
+          <label for="emotion-tranquilo" class="block glass p-5 text-center transition emotion-card border-2 border-cyan-500/20">
+            <div class="flex justify-center mb-3">
+              <div class="w-5 h-5 rounded-full border-2 border-cyan-400 flex items-center justify-center">
+                <div class="w-2.5 h-2.5 rounded-full bg-cyan-400 opacity-0 radio-indicator transition-all"></div>
+              </div>
+            </div>
+            <!-- Custom Calm Wolf SVG -->
+            <svg class="w-24 h-24 mx-auto mb-3 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 2L4 12l8 10 8-10z"/>
+              <line x1="7" y1="11" x2="10" y2="11" stroke-linecap="round"/>
+              <line x1="14" y1="11" x2="17" y2="11" stroke-linecap="round"/>
+              <path d="M10 15h4" stroke-linecap="round"/>
+            </svg>
+            <div class="font-bold text-sm mb-1 text-cyan-400">Tranquilo</div>
+            <div class="text-xs text-muted">En paz, centrado y relajado.</div>
+          </label>
+        </div>
+
+        <!-- Sad Mood -->
+        <div class="emotion-card-wrapper">
+          <input type="radio" name="emotion" id="emotion-triste" value="triste" class="hidden">
+          <label for="emotion-triste" class="block glass p-5 text-center transition emotion-card border-2 border-purple-500/20">
+            <div class="flex justify-center mb-3">
+              <div class="w-5 h-5 rounded-full border-2 border-purple-400 flex items-center justify-center">
+                <div class="w-2.5 h-2.5 rounded-full bg-purple-400 opacity-0 radio-indicator transition-all"></div>
+              </div>
+            </div>
+            <!-- Custom Sad Wolf SVG -->
+            <svg class="w-24 h-24 mx-auto mb-3 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 2l3 6 7 1-5 5.5 1.5 6.5-6.5-3.5L5.5 21 7 14.5 2 9l7-1z"/>
+              <ellipse cx="8" cy="11" rx="1.5" ry="1" fill="currentColor"/>
+              <ellipse cx="16" cy="11" rx="1.5" ry="1" fill="currentColor"/>
+              <path d="M15 16c-1-1-5-1-6 0" stroke-linecap="round"/>
+            </svg>
+            <div class="font-bold text-sm mb-1 text-purple-400">Triste</div>
+            <div class="text-xs text-muted">Desanimado o con poca motivación.</div>
+          </label>
+        </div>
+
+        <!-- Anxious Mood -->
+        <div class="emotion-card-wrapper">
+          <input type="radio" name="emotion" id="emotion-ansioso" value="ansioso" class="hidden">
+          <label for="emotion-ansioso" class="block glass p-5 text-center transition emotion-card border-2 border-yellow-500/20">
+            <div class="flex justify-center mb-3">
+              <div class="w-5 h-5 rounded-full border-2 border-yellow-400 flex items-center justify-center">
+                <div class="w-2.5 h-2.5 rounded-full bg-yellow-400 opacity-0 radio-indicator transition-all"></div>
+              </div>
+            </div>
+            <!-- Custom Anxious Wolf SVG -->
+            <svg class="w-24 h-24 mx-auto mb-3 text-yellow-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 2L2 22h20z"/>
+              <circle cx="8" cy="13" r="1.5" fill="currentColor"/>
+              <circle cx="16" cy="13" r="1.5" fill="currentColor"/>
+              <circle cx="12" cy="17" r="1" fill="currentColor"/>
+            </svg>
+            <div class="font-bold text-sm mb-1 text-yellow-400">Ansioso</div>
+            <div class="text-xs text-muted">Preocupado o sintiendo agobio.</div>
+          </label>
+        </div>
+
+        <!-- Angry Mood -->
+        <div class="emotion-card-wrapper">
+          <input type="radio" name="emotion" id="emotion-enojado" value="enojado" class="hidden">
+          <label for="emotion-enojado" class="block glass p-5 text-center transition emotion-card border-2 border-rose-500/20">
+            <div class="flex justify-center mb-3">
+              <div class="w-5 h-5 rounded-full border-2 border-rose-400 flex items-center justify-center">
+                <div class="w-2.5 h-2.5 rounded-full bg-rose-400 opacity-0 radio-indicator transition-all"></div>
+              </div>
+            </div>
+            <!-- Custom Angry Wolf SVG -->
+            <svg class="w-24 h-24 mx-auto mb-3 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 2l10 10-10 10L2 12z"/>
+              <path d="M6 10l3 1" stroke-linecap="round"/>
+              <path d="M18 10l-3 1" stroke-linecap="round"/>
+              <path d="M10 16c1-1 3-1 4 0" stroke-linecap="round"/>
+            </svg>
+            <div class="font-bold text-sm mb-1 text-rose-400">Enojado</div>
+            <div class="text-xs text-muted">Frustrado, molesto o irritado.</div>
+          </label>
+        </div>
+
+      </div>
+
+      <!-- Submit & Feedback -->
+      <div class="flex flex-col items-center justify-center mb-8">
+        <button class="btn-cyan px-10 py-4 text-lg shadow-lg" id="btn-register-mood" onclick="saveMoodCheck()">
+          REGISTRAR EMOCIÓN DE HOY
+        </button>
+        <span class="text-xs text-cyan mt-3 font-semibold">+2 Eight-Coins por tu registro diario ✓</span>
+      </div>
+
+      <!-- Weekly Tracker Calendar -->
+      <div class="glass p-5 mb-6">
+        <h3 class="font-bold mb-4 text-base text-cyan flex items-center gap-2">
+          <i data-lucide="calendar"></i> Tu Seguimiento Semanal
+        </h3>
+        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 text-center" id="weekly-track">
+          <!-- Mon -->
+          <div class="glass-sm p-3 text-xs flex flex-col items-center" data-day="0">
+            <div class="text-xl font-bold mb-1 status-emoji text-slate-500">😊</div>
+            <span class="font-semibold mb-1">Lunes</span>
+            <span class="text-[10px] text-emerald-400 font-bold">Registrado</span>
+          </div>
+          <!-- Tue -->
+          <div class="glass-sm p-3 text-xs flex flex-col items-center" data-day="1">
+            <div class="text-xl font-bold mb-1 status-emoji text-slate-500">😐</div>
+            <span class="font-semibold mb-1">Martes</span>
+            <span class="text-[10px] text-emerald-400 font-bold">Registrado</span>
+          </div>
+          <!-- Wed -->
+          <div class="glass-sm p-3 text-xs flex flex-col items-center" data-day="2">
+            <div class="text-xl font-bold mb-1 status-emoji text-slate-500">-</div>
+            <span class="font-semibold mb-1">Miércoles</span>
+            <span class="text-[10px] text-yellow-500">Hoy</span>
+          </div>
+          <!-- Thu -->
+          <div class="glass-sm p-3 text-xs flex flex-col items-center" data-day="3">
+            <div class="text-xl font-bold mb-1 status-emoji text-slate-500">-</div>
+            <span class="font-semibold mb-1">Jueves</span>
+            <span class="text-[10px] text-muted">Pendiente</span>
+          </div>
+          <!-- Fri -->
+          <div class="glass-sm p-3 text-xs flex flex-col items-center" data-day="4">
+            <div class="text-xl font-bold mb-1 status-emoji text-slate-500">-</div>
+            <span class="font-semibold mb-1">Viernes</span>
+            <span class="text-[10px] text-muted">Pendiente</span>
+          </div>
+          <!-- Sat -->
+          <div class="glass-sm p-3 text-xs flex flex-col items-center" data-day="5">
+            <div class="text-xl font-bold mb-1 status-emoji text-slate-500">-</div>
+            <span class="font-semibold mb-1">Sábado</span>
+            <span class="text-[10px] text-muted">Pendiente</span>
+          </div>
+          <!-- Sun -->
+          <div class="glass-sm p-3 text-xs flex flex-col items-center" data-day="6">
+            <div class="text-xl font-bold mb-1 status-emoji text-slate-500">-</div>
+            <span class="font-semibold mb-1">Domingo</span>
+            <span class="text-[10px] text-muted">Pendiente</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Warning system integration (DECE trigger notice) -->
+      <div id="dece-alert" class="hidden glass p-4 border border-rose-500/40 bg-rose-500/5 rounded-xl">
+        <div class="flex items-start gap-3">
+          <span class="text-2xl">⚠️</span>
+          <div>
+            <p class="font-bold text-rose-400">Alerta Preventiva Activada para el DECE</p>
+            <p class="text-xs text-muted">Hemos detectado múltiples días con emociones complejas. No te preocupes, un profesional del DECE te contactará para ofrecerte apoyo confidencial y amigable. ¡No estás solo!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: WOLF AI -->
+    <section class="section" id="page-wolfai">
+      <h1 class="text-3xl font-bold mb-2 text-cyan">Wolf AI</h1>
+      <p class="mb-6 text-muted">Tu confidente y consultor de inteligencia emocional, disponible las 24 horas.</p>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        
+        <!-- Main Chat Frame -->
+        <div class="md:col-span-2 flex flex-col">
+          
+          <!-- Interstitial Breathing exercise overlay -->
+          <div id="breathing-exercise" class="glass p-6 mb-4 hidden text-center border-2 border-cyan-400/30">
+            <h3 class="font-bold text-lg mb-2 text-cyan">Respiración Guiada 4-4-4</h3>
+            <p class="text-xs text-muted mb-4">Sigue el ritmo de la esfera de luz para relajarte.</p>
+            
+            <div class="my-8" id="breathing-anim-container">
+              <div class="breathing-circle-outer">
+                <div class="breathing-circle-inner"></div>
+              </div>
+            </div>
+
+            <div class="space-y-1 mb-6">
+              <div id="breathing-stage" class="text-2xl font-bold text-cyan tracking-wider">Inhala profundamente...</div>
+              <div id="breathing-counter" class="text-4xl font-extrabold text-white">4</div>
+            </div>
+            
+            <button class="btn-outline py-2 px-6 text-sm" onclick="stopBreathing()">Terminar ejercicio</button>
+          </div>
+
+          <!-- Chat Core Interface -->
+          <div class="glass p-5 flex flex-col justify-between min-h-[460px]">
+            
+            <!-- Chat Partner Title bar -->
+            <div class="flex items-center gap-3 mb-4 pb-3 border-b border-white/10">
+              <div class="w-10 h-10 rounded-full bg-cyan-900/40 border border-cyan-400/30 flex items-center justify-center text-xl">
+                🐺
+              </div>
+              <div>
+                <h3 class="font-bold text-sm text-cyan">Wolf AI Companion</h3>
+                <p class="text-[11px] text-emerald-400 flex items-center gap-1">
+                  <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span> Activo • Confidencial
+                </p>
+              </div>
+            </div>
+
+            <!-- Messages Window -->
+            <div id="chat-area" class="flex flex-col gap-3 mb-4 overflow-y-auto max-h-[250px] pr-2">
+              <div class="chat-bubble chat-bot">
+                ¡Hola! Soy <strong>Wolf AI</strong>. Estoy aquí para escucharte en un espacio seguro y libre de juicios. ¿Cómo ha estado tu día escolar? ¿Quieres hablar de algo?
+              </div>
+            </div>
+
+            <!-- Helper Prompt Chips -->
+            <div class="mb-4">
+              <p class="text-[11px] mb-2 text-muted">Sugerencias para iniciar:</p>
+              <div class="flex flex-wrap gap-1.5">
+                <button class="glass-sm px-3 py-1.5 text-xs text-cyan hover:border-cyan hover:bg-cyan-dim transition" onclick="selectPromptChip('Siento mucho estrés por los exámenes')">😟 Estrés escolar</button>
+                <button class="glass-sm px-3 py-1.5 text-xs text-cyan hover:border-cyan hover:bg-cyan-dim transition" onclick="selectPromptChip('Quiero calmar la ansiedad')">🌿 Controlar ansiedad</button>
+                <button class="glass-sm px-3 py-1.5 text-xs text-cyan hover:border-cyan hover:bg-cyan-dim transition" onclick="selectPromptChip('Tuve un desacuerdo con un compañero de clase')">🤝 Desacuerdo social</button>
+                <button class="glass-sm px-3 py-1.5 text-xs text-cyan hover:border-cyan hover:bg-cyan-dim transition" onclick="startBreathing()">🌬️ Ejercicio de respiración</button>
+              </div>
+            </div>
+
+            <!-- Chat Entry bar -->
+            <div class="flex gap-2">
+              <input type="text" id="chat-input" placeholder="Pregúntale algo a Wolf AI..." class="flex-1 glass-sm px-4 py-3 bg-slate-950/40 border border-white/10 text-sm outline-none focus:border-cyan text-white rounded-xl">
+              <button class="btn-cyan p-3 rounded-xl flex items-center justify-center w-12 h-12" onclick="sendChatMessage()">
+                <i data-lucide="send" style="width:18px;height:18px"></i>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Sidebar Recommendations Panel -->
+        <div class="space-y-4">
+          <div class="glass p-5">
+            <h3 class="font-bold mb-3 text-sm text-cyan flex items-center gap-2">
+              <i data-lucide="sparkles"></i> Actividades sugeridas
+            </h3>
+            <div class="space-y-2">
+              <button class="w-full text-left glass-sm p-3 rounded-lg hover:border-cyan hover:bg-cyan-dim/5 transition" onclick="startBreathing()">
+                <div class="font-semibold text-xs text-white">🌬️ Respiración Cuadrada (4-4-4)</div>
+                <div class="text-[10px] text-muted mt-1">Ideal para momentos de tensión extrema o pánico.</div>
+              </button>
+              <button class="w-full text-left glass-sm p-3 rounded-lg hover:border-cyan hover:bg-cyan-dim/5 transition" onclick="showAnimoMessage()">
+                <div class="font-semibold text-xs text-white">💬 Recibir Afirmación Positiva</div>
+                <div class="text-[10px] text-muted mt-1">Un recordatorio motivacional de tu valor en la manada.</div>
+              </button>
+              <button class="w-full text-left glass-sm p-3 rounded-lg hover:border-cyan hover:bg-cyan-dim/5 transition" onclick="navigate('retos')">
+                <div class="font-semibold text-xs text-white">🎯 Reto de Conectividad Humana</div>
+                <div class="text-[10px] text-muted mt-1">Pequeños pasos para mejorar tus relaciones sociales.</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Helpline Information card -->
+          <div class="glass p-5 border-l-4 border-yellow-500">
+            <h4 class="font-bold text-xs text-yellow-500 mb-1">🆘 ¿Necesitas ayuda inmediata?</h4>
+            <p class="text-[11px] text-muted mb-2">Si estás pasando por una crisis grave o consideras que no puedes manejar tus emociones, pide asistencia confidencial al DECE de tu colegio de inmediato.</p>
+            <button class="w-full btn-outline py-2 px-3 text-[10px] border-yellow-500 text-yellow-500 hover:bg-yellow-500/10 rounded-lg font-bold" onclick="alertDeceDirect()">
+              NOTIFICAR DE EMERGENCIA AL DECE
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: RETOS -->
+    <section class="section" id="page-retos">
+      <div class="flex flex-col md:flex-row md:items-center justify-between mb-6">
+        <div>
+          <h1 class="text-3xl font-bold text-cyan">Retos de Cuidado y Empatía</h1>
+          <p class="text-muted">Cumple desafíos diarios o semanales para fortalecer tu mente y apoyar a tus amigos.</p>
+        </div>
+        <!-- Progress representation -->
+        <div class="glass-sm p-3 mt-4 md:mt-0 flex items-center gap-3">
+          <div>
+            <div class="text-xs text-muted">Retos de hoy</div>
+            <div class="font-bold text-sm text-cyan" id="challenges-count">1 / 4 Completados</div>
+          </div>
+          <div class="w-16 h-2 progress-bar">
+            <div class="progress-fill" id="challenges-progress" style="width: 25%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Challenge categories tab system -->
+      <div class="grid md:grid-cols-3 gap-6">
+        
+        <!-- Individual Mental Wellness Challenges -->
+        <div class="glass p-5 space-y-4">
+          <h3 class="font-bold text-sm text-cyan flex items-center gap-2 border-b border-white/10 pb-2">
+            <i data-lucide="user"></i> Cuidado Personal
+          </h3>
+          
+          <!-- Card Challenge 1 -->
+          <div class="glass-sm p-4 space-y-2 relative border-l-4 border-cyan" id="challenge-card-1">
+            <div class="flex justify-between items-start">
+              <span class="badge badge-blue">Diario</span>
+              <span class="text-cyan text-xs font-bold flex items-center gap-0.5">⚡ 15 Coins</span>
+            </div>
+            <h4 class="font-bold text-xs text-white">Completar 1 ejercicio de respiración</h4>
+            <p class="text-[10px] text-muted">Tómate 3 minutos de tu jornada para regular tu ritmo cardíaco y calmar tu mente.</p>
+            <button class="w-full btn-cyan py-1.5 px-3 text-xs rounded-lg mt-2" onclick="completeChallenge(1, 15)">Completar ahora</button>
+          </div>
+
+          <!-- Card Challenge 2 -->
+          <div class="glass-sm p-4 space-y-2 relative border-l-4 border-cyan" id="challenge-card-2">
+            <div class="flex justify-between items-start">
+              <span class="badge badge-blue">Diario</span>
+              <span class="text-cyan text-xs font-bold flex items-center gap-0.5">⚡ 10 Coins</span>
+            </div>
+            <h4 class="font-bold text-xs text-white">Registrar tu estado de ánimo</h4>
+            <p class="text-[10px] text-muted">Cumple con la bitácora emocional diaria para llevar estadísticas precisas de ti.</p>
+            <button class="w-full btn-cyan py-1.5 px-3 text-xs rounded-lg mt-2" onclick="completeChallenge(2, 10)">Completar ahora</button>
+          </div>
+        </div>
+
+        <!-- Social and Empathy (Anti-Bullying) Challenges -->
+        <div class="glass p-5 space-y-4">
+          <h3 class="font-bold text-sm text-cyan flex items-center gap-2 border-b border-white/10 pb-2">
+            <i data-lucide="users"></i> Empatía Escolar
+          </h3>
+
+          <!-- Card Challenge 3 -->
+          <div class="glass-sm p-4 space-y-2 relative border-l-4 border-emerald-400" id="challenge-card-3">
+            <div class="flex justify-between items-start">
+              <span class="badge badge-green">Semanal</span>
+              <span class="text-emerald-400 text-xs font-bold flex items-center gap-0.5">⚡ 30 Coins</span>
+            </div>
+            <h4 class="font-bold text-xs text-white">Enviar una nota de aprecio anónima</h4>
+            <p class="text-[10px] text-muted">Usa Wolves para enviarle un mensaje anónimo de apoyo a un compañero que notes alejado o desanimado.</p>
+            <button class="w-full btn-cyan py-1.5 px-3 text-xs rounded-lg mt-2" onclick="completeChallenge(3, 30)">Completar ahora</button>
+          </div>
+
+          <!-- Card Challenge 4 -->
+          <div class="glass-sm p-4 space-y-2 relative border-l-4 border-emerald-400" id="challenge-card-4">
+            <div class="flex justify-between items-start">
+              <span class="badge badge-green">Semanal</span>
+              <span class="text-emerald-400 text-xs font-bold flex items-center gap-0.5">⚡ 25 Coins</span>
+            </div>
+            <h4 class="font-bold text-xs text-white">Saludar de forma positiva a 3 personas</h4>
+            <p class="text-[10px] text-muted">Practica romper el hielo escolar. Un saludo amable puede cambiar drásticamente el día de alguien.</p>
+            <button class="w-full btn-cyan py-1.5 px-3 text-xs rounded-lg mt-2" onclick="completeChallenge(4, 25)">Completar ahora</button>
+          </div>
+        </div>
+
+        <!-- Collective/Classroom Level Challenges -->
+        <div class="glass p-5 space-y-4">
+          <h3 class="font-bold text-sm text-cyan flex items-center gap-2 border-b border-white/10 pb-2">
+            <i data-lucide="trophy"></i> Desafío Colectivo
+          </h3>
+
+          <!-- Class Challenge Card -->
+          <div class="glass-sm p-4 space-y-3 relative border-l-4 border-yellow-500">
+            <div class="flex justify-between items-start">
+              <span class="badge badge-yellow">Manada</span>
+              <span class="text-yellow-500 text-xs font-bold flex items-center gap-0.5">⚡ Premio de Grupo</span>
+            </div>
+            <h4 class="font-bold text-xs text-white">La Manada Unida</h4>
+            <p class="text-[10px] text-muted">Para que toda la clase gane el "Pase de Almuerzo Libre", al menos el 85% de los alumnos debe registrar emociones 5 días consecutivos.</p>
+            
+            <div class="space-y-1">
+              <div class="flex justify-between text-[10px] text-muted">
+                <span>Progreso del Curso</span>
+                <span>72%</span>
+              </div>
+              <div class="w-full h-2 progress-bar">
+                <div class="progress-fill" style="width: 72%"></div>
+              </div>
+            </div>
+            <div class="text-[10px] text-yellow-400 font-semibold bg-yellow-400/10 p-2 rounded border border-yellow-400/20 text-center">
+              Faltan solo 12 estudiantes para la meta general
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: WALLET (EIGHT-COINS) -->
+    <section class="section" id="page-wallet">
+      <h1 class="text-3xl font-bold mb-2 text-cyan">Mi Wallet</h1>
+      <p class="mb-6 text-muted">El bienestar es gratificante. Administra tus Eight-Coins ganadas a través de hábitos saludables.</p>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        
+        <!-- Large Wallet Balance Indicator -->
+        <div class="glass p-6 text-center flex flex-col justify-center items-center relative overflow-hidden">
+          <div class="absolute -top-10 -right-10 w-32 h-32 bg-cyan-400/10 rounded-full blur-xl"></div>
+          <div class="text-5xl mb-4 text-cyan animate-pulse">⚡</div>
+          <div class="text-xs text-muted uppercase tracking-wider font-semibold">Balance Disponible</div>
+          <div class="text-5xl font-extrabold text-white my-2" id="wallet-balance-big">1.250</div>
+          <div class="text-xs text-cyan font-bold mb-4">Equivalente a bienestar y resiliencia</div>
+          <button class="btn-cyan w-full text-sm" onclick="navigate('tienda')">
+            IR A LA TIENDA DE PREMIOS
+          </button>
+        </div>
+
+        <!-- Earning stats -->
+        <div class="glass p-6 space-y-4 md:col-span-2">
+          <h3 class="font-bold text-base text-cyan">Distribución de Ingresos</h3>
+          <p class="text-xs text-muted">Mira de qué manera estás consiguiendo fortalecer tu puntaje emocional:</p>
+          
+          <div class="space-y-3">
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="text-white">Registros de Mood Checks (40%)</span>
+                <span class="text-cyan">500 Coins</span>
+              </div>
+              <div class="w-full h-2.5 progress-bar">
+                <div class="progress-fill" style="width: 40%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="text-white">Ejercicios de Respiración (30%)</span>
+                <span class="text-cyan">375 Coins</span>
+              </div>
+              <div class="w-full h-2.5 progress-bar">
+                <div class="progress-fill" style="width: 30%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="text-white">Desafíos de Empatía (20%)</span>
+                <span class="text-cyan">250 Coins</span>
+              </div>
+              <div class="w-full h-2.5 progress-bar">
+                <div class="progress-fill" style="width: 20%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="text-white">Retos Colectivos (10%)</span>
+                <span class="text-cyan">125 Coins</span>
+              </div>
+              <div class="w-full h-2.5 progress-bar">
+                <div class="progress-fill" style="width: 10%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Wallet Transaction History -->
+      <div class="glass p-5 mt-6">
+        <h3 class="font-bold text-base text-cyan mb-4 flex items-center gap-2">
+          <i data-lucide="history"></i> Historial de Movimientos
+        </h3>
+        <div class="overflow-x-auto">
+          <table class="table-wolves">
+            <thead>
+              <tr>
+                <th>Operación</th>
+                <th>Fecha</th>
+                <th>Concepto</th>
+                <th>Estado</th>
+                <th class="text-right">Monto</th>
+              </tr>
+            </thead>
+            <tbody id="wallet-history-rows">
+              <tr>
+                <td class="font-semibold text-emerald-400">Ingreso</td>
+                <td>Hoy, 08:30 AM</td>
+                <td>Registro emocional (Mood Check diario)</td>
+                <td><span class="badge badge-green">Completado</span></td>
+                <td class="text-right text-emerald-400 font-bold">+2 Coins</td>
+              </tr>
+              <tr>
+                <td class="font-semibold text-emerald-400">Ingreso</td>
+                <td>Ayer, 04:15 PM</td>
+                <td>Reto individual: Respirar 3 min</td>
+                <td><span class="badge badge-green">Completado</span></td>
+                <td class="text-right text-emerald-400 font-bold">+15 Coins</td>
+              </tr>
+              <tr>
+                <td class="font-semibold text-rose-400">Canje</td>
+                <td>25 de Mayo, 11:00 AM</td>
+                <td>Comisión: Taza Oficial Wolves</td>
+                <td><span class="badge badge-blue">Enviado</span></td>
+                <td class="text-right text-rose-400 font-bold">-350 Coins</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: PANEL DECE (CONSEJERÍA ESTUDIANTIL) -->
+    <section class="section" id="page-paneldece">
+      <div class="flex flex-col md:flex-row md:items-center justify-between mb-6">
+        <div>
+          <h1 class="text-3xl font-bold text-rose-400">Panel de Acompañamiento DECE</h1>
+          <p class="text-muted">Espacio administrativo para psicólogos, tutores y personal de orientación del plantel.</p>
+        </div>
+        <div class="flex items-center gap-2 mt-4 md:mt-0">
+          <span class="badge badge-red text-sm py-1.5 px-3">Modo Administrador</span>
+        </div>
+      </div>
+
+      <!-- Quick Metrics for the Counselor -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div class="glass p-4 border-l-4 border-rose-500">
+          <div class="text-xs text-muted uppercase">Alertas Activas</div>
+          <div class="text-3xl font-bold text-rose-400 mt-1" id="dece-stat-active">2</div>
+          <div class="text-[10px] text-muted">Estudiantes que requieren soporte</div>
+        </div>
+        <div class="glass p-4 border-l-4 border-yellow-500">
+          <div class="text-xs text-muted uppercase">En Seguimiento</div>
+          <div class="text-3xl font-bold text-yellow-500 mt-1">4</div>
+          <div class="text-[10px] text-muted">Sesiones programadas para esta semana</div>
+        </div>
+        <div class="glass p-4 border-l-4 border-emerald-400">
+          <div class="text-xs text-muted uppercase">Casos Resueltos</div>
+          <div class="text-3xl font-bold text-emerald-400 mt-1">18</div>
+          <div class="text-[10px] text-muted">Estudiantes estabilizados con éxito</div>
+        </div>
+        <div class="glass p-4 border-l-4 border-cyan">
+          <div class="text-xs text-muted uppercase">Índice de Clima Escolar</div>
+          <div class="text-3xl font-bold text-cyan mt-1">87%</div>
+          <div class="text-[10px] text-muted">Nivel promedio de bienestar</div>
+        </div>
+      </div>
+
+      <div class="grid lg:grid-cols-3 gap-6">
+        
+        <!-- Alerts & Action Cases (List of students) -->
+        <div class="glass p-5 lg:col-span-2 space-y-4">
+          <h3 class="font-bold text-sm text-cyan flex items-center justify-between">
+            <span>🔴 Alertas de Bienestar en Tiempo Real</span>
+            <span class="text-xs text-muted font-normal">Identificación temprana de situaciones críticas</span>
+          </h3>
+
+          <div class="space-y-3" id="dece-alerts-list">
+            
+            <!-- Alert Case 1 -->
+            <div class="glass-sm p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-rose-500/30 bg-rose-500/5">
+              <div class="space-y-1">
+                <div class="flex items-center gap-2">
+                  <h4 class="font-bold text-sm text-white">Mateo Villavicencio</h4>
+                  <span class="badge badge-red">Crítico</span>
+                </div>
+                <p class="text-xs text-muted">Registró <strong>Ansioso / Enojado</strong> durante 4 días seguidos de exámenes.</p>
+                <div class="text-[10px] text-slate-400">Año lectivo: 1ro de Bachillerato "B"</div>
+              </div>
+              <div class="flex gap-2 shrink-0">
+                <button class="btn-cyan py-1.5 px-3 text-xs rounded-lg" onclick="handleDeceAction('Mateo Villavicencio', 'intervenir')">Agendar Reunión</button>
+                <button class="btn-outline py-1.5 px-3 text-xs border-slate-500 text-slate-400 hover:bg-slate-800 rounded-lg" onclick="handleDeceAction('Mateo Villavicencio', 'ignorar')">Desestimar</button>
+              </div>
+            </div>
+
+            <!-- Alert Case 2 -->
+            <div class="glass-sm p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-yellow-500/30 bg-yellow-500/5">
+              <div class="space-y-1">
+                <div class="flex items-center gap-2">
+                  <h4 class="font-bold text-sm text-white">Camila Salazar</h4>
+                  <span class="badge badge-yellow">Moderado</span>
+                </div>
+                <p class="text-xs text-muted">Aumento abrupto en consultas de ansiedad al chat de <strong>Wolf AI</strong>.</p>
+                <div class="text-[10px] text-slate-400">Año lectivo: 10mo de Básica "A"</div>
+              </div>
+              <div class="flex gap-2 shrink-0">
+                <button class="btn-cyan py-1.5 px-3 text-xs rounded-lg" onclick="handleDeceAction('Camila Salazar', 'intervenir')">Agendar Reunión</button>
+                <button class="btn-outline py-1.5 px-3 text-xs border-slate-500 text-slate-400 hover:bg-slate-800 rounded-lg" onclick="handleDeceAction('Camila Salazar', 'ignorar')">Desestimar</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Add Mock Student Case -->
+        <div class="glass p-5 space-y-4">
+          <h3 class="font-bold text-sm text-cyan flex items-center gap-2 pb-2 border-b border-white/10">
+            <i data-lucide="plus-circle"></i> Simular nueva alerta
+          </h3>
+          <p class="text-xs text-muted">Agrega un caso simulado para ver cómo funciona el flujo de prevención de bullying y atención emocional:</p>
+          
+          <div class="space-y-3 text-xs">
+            <div>
+              <label class="block text-slate-400 mb-1">Nombre del Estudiante:</label>
+              <input type="text" id="dece-sim-name" placeholder="Ej. Javier Torres" class="w-full glass-sm bg-slate-950/50 p-2 border border-white/10 text-white rounded outline-none">
+            </div>
+            <div>
+              <label class="block text-slate-400 mb-1">Causa de la Alerta:</label>
+              <input type="text" id="dece-sim-cause" placeholder="Ej. Alertas de exclusión de grupo por sus amigos" class="w-full glass-sm bg-slate-950/50 p-2 border border-white/10 text-white rounded outline-none">
+            </div>
+            <div>
+              <label class="block text-slate-400 mb-1">Severidad:</label>
+              <select id="dece-sim-level" class="w-full glass-sm bg-slate-950/50 p-2 border border-white/10 text-slate-200 rounded outline-none">
+                <option value="Crítico">Crítico (Registros muy negativos)</option>
+                <option value="Moderado">Moderado (Señales de alerta medianas)</option>
+              </select>
+            </div>
+            <button class="w-full btn-cyan py-2 text-xs rounded-lg mt-2" onclick="simulateNewDeceAlert()">
+              GENERAR ALERTA EN PANEL
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: TIENDA (SHOP) -->
+    <section class="section" id="page-tienda">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6">
+        <div>
+          <h1 class="text-3xl font-bold text-cyan">Tienda de Premios Wolves</h1>
+          <p class="text-muted">Canjea tus Eight-Coins por premios escolares oficiales y cosméticos para tu perfil.</p>
+        </div>
+        <div class="glass-sm px-4 py-2 mt-3 sm:mt-0 flex items-center gap-2 bg-cyan-dim/10">
+          <span class="text-cyan text-lg">⚡</span>
+          <span class="text-sm font-bold text-white">Tienes:</span>
+          <span class="text-sm font-extrabold text-cyan" id="shop-coins-counter">1250 Coins</span>
+        </div>
+      </div>
+
+      <!-- Shop Grid of Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Reward 1 -->
+        <div class="glass p-4 flex flex-col justify-between space-y-4 glow-hover transition duration-300">
+          <div>
+            <div class="w-full h-32 rounded-xl bg-slate-900 border border-white/5 flex items-center justify-center text-4xl">
+              🎫
+            </div>
+            <h3 class="font-bold text-sm text-white mt-3">Pase de Almuerzo Veloz</h3>
+            <p class="text-[10px] text-muted mt-1">Salta la fila del bar escolar durante una semana completa.</p>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-cyan">⚡ 200 Coins</span>
+            <button class="btn-cyan py-1.5 px-4 text-xs rounded-lg" onclick="purchaseReward('Pase de Almuerzo Veloz', 200)">Canjear</button>
+          </div>
+        </div>
+
+        <!-- Reward 2 -->
+        <div class="glass p-4 flex flex-col justify-between space-y-4 glow-hover transition duration-300">
+          <div>
+            <div class="w-full h-32 rounded-xl bg-slate-900 border border-white/5 flex items-center justify-center text-4xl">
+              👕
+            </div>
+            <h3 class="font-bold text-sm text-white mt-3">Hoodie Oficial de Wolves</h3>
+            <p class="text-[10px] text-muted mt-1">Suéter institucional oficial con el diseño exclusivo de la manada.</p>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-cyan">⚡ 800 Coins</span>
+            <button class="btn-cyan py-1.5 px-4 text-xs rounded-lg" onclick="purchaseReward('Hoodie Oficial de Wolves', 800)">Canjear</button>
+          </div>
+        </div>
+
+        <!-- Reward 3 -->
+        <div class="glass p-4 flex flex-col justify-between space-y-4 glow-hover transition duration-300">
+          <div>
+            <div class="w-full h-32 rounded-xl bg-slate-900 border border-white/5 flex items-center justify-center text-4xl">
+              ☕
+            </div>
+            <h3 class="font-bold text-sm text-white mt-3">Termo Metálico Wolves</h3>
+            <p class="text-[10px] text-muted mt-1">Termo hermético de acero para tus bebidas calientes o frías.</p>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-cyan">⚡ 350 Coins</span>
+            <button class="btn-cyan py-1.5 px-4 text-xs rounded-lg" onclick="purchaseReward('Termo Metálico Wolves', 350)">Canjear</button>
+          </div>
+        </div>
+
+        <!-- Reward 4 -->
+        <div class="glass p-4 flex flex-col justify-between space-y-4 glow-hover transition duration-300">
+          <div>
+            <div class="w-full h-32 rounded-xl bg-slate-900 border border-white/5 flex items-center justify-center text-4xl">
+              🦊
+            </div>
+            <h3 class="font-bold text-sm text-white mt-3">Mascota Cyber-Wolf Premium</h3>
+            <p class="text-[10px] text-muted mt-1">Desbloquea una skin animada premium para tu asistente Wolf AI.</p>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-cyan">⚡ 150 Coins</span>
+            <button class="btn-cyan py-1.5 px-4 text-xs rounded-lg" onclick="purchaseReward('Mascota Cyber-Wolf Premium', 150)">Canjear</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: PROYECCIÓN (ANALYTICS) -->
+    <section class="section" id="page-proyeccion">
+      <h1 class="text-3xl font-bold mb-2 text-cyan">Proyección Emocional</h1>
+      <p class="mb-6 text-muted">Estadísticas y tendencias recopiladas de manera agregada e individual.</p>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        
+        <!-- Individual Chart representation using modern SVG visual styling -->
+        <div class="glass p-5 space-y-4 text-center">
+          <h3 class="font-bold text-sm text-cyan text-left flex items-center gap-2">
+            <i data-lucide="activity"></i> Tendencia de Ánimo Personal (Últimos 10 días)
+          </h3>
+          
+          <!-- Mock SVG Chart Line Graph -->
+          <div class="w-full h-48 bg-slate-950/40 rounded-xl relative p-4 border border-white/5 flex flex-col justify-between">
+            <!-- Grid Lines -->
+            <div class="absolute inset-x-0 top-1/4 border-b border-white/5"></div>
+            <div class="absolute inset-x-0 top-1/2 border-b border-white/5"></div>
+            <div class="absolute inset-x-0 top-3/4 border-b border-white/5"></div>
+            
+            <!-- SVG Vector Lines representing mood upward slope -->
+            <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+              <!-- Grid line markers -->
+              <path d="M0 80 Q 25 60, 50 45 T 100 20" fill="none" stroke="url(#cyan-grad)" stroke-width="4" stroke-linecap="round"/>
+              <path d="M0 80 Q 25 60, 50 45 T 100 20 L 100 100 L 0 100 Z" fill="url(#cyan-fill)" opacity="0.15"/>
+              
+              <defs>
+                <linearGradient id="cyan-grad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#a855f7"/>
+                  <stop offset="100%" stop-color="#00d9ff"/>
+                </linearGradient>
+                <linearGradient id="cyan-fill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#00d9ff"/>
+                  <stop offset="100%" stop-color="#00d9ff" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+            </svg>
+
+            <!-- Chart labels -->
+            <div class="flex justify-between items-start text-[9px] text-muted z-10">
+              <span>Nivel Excelente (Alegre)</span>
+              <span>Muy Bien (Tranquilo)</span>
+            </div>
+            <div class="flex justify-between items-end text-[9px] text-muted z-10 mt-32">
+              <span>Día 1</span>
+              <span>Día 5</span>
+              <span>Hoy</span>
+            </div>
+          </div>
+          <p class="text-xs text-muted text-left">Tu gráfica muestra un <strong>crecimiento constante</strong> en tu estabilidad tras haber integrado los ejercicios diarios de respiración profunda.</p>
+        </div>
+
+        <!-- Global Classroom/Pack statistics -->
+        <div class="glass p-5 space-y-4">
+          <h3 class="font-bold text-sm text-cyan flex items-center gap-2">
+            <i data-lucide="pie-chart"></i> Distribución de Emociones de la Manada
+          </h3>
+          <p class="text-xs text-muted">Datos de tu curso representados de manera confidencial y consolidada:</p>
+          
+          <div class="flex flex-col sm:flex-row items-center gap-6 justify-center">
+            
+            <!-- Beautiful mock circular donut chart using inline Tailwind and circular SVGs -->
+            <div class="relative w-36 h-36 shrink-0">
+              <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                <!-- Alegre 50% -->
+                <circle cx="18" cy="18" r="15.915" fill="transparent" stroke="var(--cyan)" stroke-width="4" stroke-dasharray="50 100" stroke-dashoffset="0"></circle>
+                <!-- Tranquilo 30% -->
+                <circle cx="18" cy="18" r="15.915" fill="transparent" stroke="#10b981" stroke-width="4" stroke-dasharray="30 100" stroke-dashoffset="-50"></circle>
+                <!-- Ansioso/Triste 20% -->
+                <circle cx="18" cy="18" r="15.915" fill="transparent" stroke="#f59e0b" stroke-width="4" stroke-dasharray="20 100" stroke-dashoffset="-80"></circle>
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <span class="text-xs text-muted uppercase">Estado</span>
+                <span class="text-sm font-extrabold text-cyan">Positivo</span>
+              </div>
+            </div>
+
+            <!-- Legends -->
+            <div class="space-y-2 text-xs">
+              <div class="flex items-center gap-2">
+                <span class="inline-block w-3.5 h-3.5 rounded bg-cyan"></span>
+                <span class="text-white">Alegre (50%)</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="inline-block w-3.5 h-3.5 rounded bg-emerald-500"></span>
+                <span class="text-white">Tranquilo (30%)</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="inline-block w-3.5 h-3.5 rounded bg-amber-500"></span>
+                <span class="text-white">Ansioso o Triste (20%)</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: MI MANADA (EQUIPO) -->
+    <section class="section" id="page-equipo">
+      <div class="flex flex-col md:flex-row md:items-center justify-between mb-6">
+        <div>
+          <h1 class="text-3xl font-bold text-cyan">Mi Manada (Curso)</h1>
+          <p class="text-muted">Acompañamiento colectivo para evitar la discriminación y promover la integración escolar.</p>
+        </div>
+        <div class="mt-3 md:mt-0 glass-sm px-4 py-2 flex items-center gap-2">
+          <span class="text-xs text-muted">Líder del mes:</span>
+          <span class="text-xs font-bold text-cyan">🐺 Lobo de Oro</span>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        
+        <!-- List of pack members and emotional status (Anonymous mock list to avoid exposure) -->
+        <div class="glass p-5 md:col-span-2 space-y-4">
+          <h3 class="font-bold text-sm text-cyan flex items-center gap-2 border-b border-white/10 pb-2">
+            <i data-lucide="shield-check"></i> Monitoreo de Convivencia Sana
+          </h3>
+          <p class="text-xs text-muted">Cada estudiante utiliza pseudónimos protectores o iniciales para proteger la identidad, garantizando un ambiente seguro.</p>
+          
+          <div class="space-y-2">
+            
+            <div class="glass-sm p-3 flex justify-between items-center text-xs">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-cyan-900/40 flex items-center justify-center font-bold text-cyan">A1</div>
+                <span class="text-white">Alfa Veloz (Tú)</span>
+              </div>
+              <span class="badge badge-green">● Estable</span>
+            </div>
+
+            <div class="glass-sm p-3 flex justify-between items-center text-xs">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center font-bold text-white">M3</div>
+                <span class="text-white">Lobo Curioso</span>
+              </div>
+              <span class="badge badge-green">● Estable</span>
+            </div>
+
+            <div class="glass-sm p-3 flex justify-between items-center text-xs">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center font-bold text-white">X9</div>
+                <span class="text-white">Lobo Errante</span>
+              </div>
+              <span class="badge badge-yellow">● Requiere apoyo</span>
+            </div>
+
+            <div class="glass-sm p-3 flex justify-between items-center text-xs">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center font-bold text-white">T2</div>
+                <span class="text-white">Zorro Astuto</span>
+              </div>
+              <span class="badge badge-green">● Estable</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Social anti-bullying support system info -->
+        <div class="glass p-5 space-y-4">
+          <h3 class="font-bold text-sm text-cyan flex items-center gap-2 border-b border-white/10 pb-2">
+            <i data-lucide="heart-handshake"></i> Herramientas de Empatía
+          </h3>
+          <p class="text-xs text-muted">¿Has notado que un compañero de clase está siendo discriminado, excluido o sufre acoso escolar?</p>
+          
+          <button class="w-full btn-cyan py-3 text-xs flex justify-center items-center gap-2" onclick="openReportModal()">
+            <i data-lucide="alert-triangle"></i> REPORTAR ACOSO (CONFIDENCIAL)
+          </button>
+          
+          <p class="text-[10px] text-muted text-center italic">Tu reporte llega únicamente al departamento de consejería DECE para actuar con empatía y absoluto secreto profesional.</p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- TOAST NOTIFICATION POPUP -->
+  <div id="toast" class="toast flex items-center gap-2">
+    <span id="toast-text">¡Acción realizada con éxito!</span>
+  </div>
+
+  <!-- ACOSO REPORT MODAL (CONFIDENCIAL) -->
+  <div id="report-modal" class="fixed inset-0 z-50 flex items-center justify-center modal-backdrop hidden">
+    <div class="glass p-6 max-w-md w-full mx-4 space-y-4 border border-rose-500/30">
+      <div class="flex justify-between items-center border-b border-white/10 pb-2">
+        <h3 class="font-bold text-base text-rose-400 flex items-center gap-2">
+          <i data-lucide="shield-alert"></i> Reportar Acoso Escolar
+        </h3>
+        <button class="text-slate-400 hover:text-white" onclick="closeReportModal()">&times;</button>
+      </div>
+      <p class="text-xs text-muted">Describe de manera confidencial la situación observada. El personal de DECE intervendrá con prudencia.</p>
+      
+      <div class="space-y-2 text-xs">
+        <div>
+          <label class="block text-slate-300 mb-1">Nombre de la persona afectada (opcional):</label>
+          <input type="text" id="report-victim" placeholder="Dejar en blanco si es anónimo" class="w-full glass-sm bg-slate-950 p-2.5 border border-white/10 text-white rounded outline-none">
+        </div>
+        <div>
+          <label class="block text-slate-300 mb-1">¿Qué está sucediendo? (Exclusión, insultos, agresión física, etc.):</label>
+          <textarea id="report-details" rows="3" placeholder="Describe los detalles de forma clara..." class="w-full glass-sm bg-slate-950 p-2.5 border border-white/10 text-white rounded outline-none"></textarea>
+        </div>
+      </div>
+
+      <div class="flex gap-2 justify-end pt-2 text-xs">
+        <button class="btn-outline py-2 px-4 rounded-lg" onclick="closeReportModal()">Cancelar</button>
+        <button class="btn-cyan py-2 px-4 rounded-lg bg-rose-500 text-white hover:bg-rose-600 border-none" onclick="submitAcosoReport()">Enviar Reporte</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Platform Core Logic Script -->
+  <script>
+    // State storage variables
+    let coins = 1250;
+    let registeredToday = false;
+    let negativeMoodCount = 0;
+    let completedChallengesList = [];
+    
+    // Web Audio Synthesizer for Retro Game Style Audio Chimes (Self-contained)
+    function playSound(type) {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        const now = ctx.currentTime;
+        
+        if (type === 'success') {
+          // Coin sound chord
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, now); // C5
+          osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+          osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+          osc.start(now);
+          osc.stop(now + 0.45);
+        } else if (type === 'alert') {
+          // Alarm sound
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(880, now); // A5
+          osc.frequency.setValueAtTime(440, now + 0.15); // A4
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'breath') {
+          // Gentle white noise style hum
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(220, now);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 3);
+          osc.start(now);
+          osc.stop(now + 3);
+        }
+      } catch (e) {
+        console.warn("Web Audio API blocked or unsupported:", e);
+      }
+    }
+
+    // View Routing System
+    function navigate(sectionId) {
+      document.querySelectorAll('.section').forEach(sec => {
+        sec.classList.remove('active');
+      });
+      const activeSection = document.getElementById('page-' + sectionId);
+      if (activeSection) {
+        activeSection.classList.add('active');
+      }
+
+      document.querySelectorAll('.sidebar-link').forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('data-page') === sectionId) {
+          link.classList.add('active');
+        }
+      });
+      
+      // Auto-close sidebar on mobile
+      if (window.innerWidth <= 768) {
+        document.getElementById('sidebar').classList.remove('open');
+      }
+    }
+
+    // Mobile Sidebar Drawer toggler
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('open');
+    }
+
+    // Custom non-blocking custom Toast Alerts
+    function triggerToast(text, isAlert = false) {
+      const toast = document.getElementById('toast');
+      const toastText = document.getElementById('toast-text');
+      
+      toastText.innerText = text;
+      
+      if (isAlert) {
+        toast.style.background = 'linear-gradient(135deg, #ff4757, #ff6b81)';
+        playSound('alert');
+      } else {
+        toast.style.background = 'linear-gradient(135deg, #00d9ff, #00b8d4)';
+        playSound('success');
+      }
+      
+      toast.style.transform = 'translateY(0)';
+      toast.style.opacity = '1';
+      
+      setTimeout(() => {
+        toast.style.transform = 'translateY(100px)';
+        toast.style.opacity = '0';
+      }, 3500);
+    }
+
+    // Update Coin balances globally
+    function addCoins(amount) {
+      coins += amount;
+      document.getElementById('topbar-coins').innerText = coins.toLocaleString();
+      document.getElementById('stat-coins').innerText = coins.toLocaleString();
+      document.getElementById('shop-coins-counter').innerText = coins.toLocaleString() + ' Coins';
+      document.getElementById('wallet-balance-big').innerText = coins.toLocaleString();
+    }
+
+    function saveMoodCheck() {
+      const selectedRadio = document.querySelector('input[name="emotion"]:checked');
+      if (!selectedRadio) {
+        triggerToast("Por favor, selecciona una emoción primero.", true);
+        return;
+      }
+      
+      const moodValue = selectedRadio.value;
+      
+      if (registeredToday) {
+        triggerToast("Ya has registrado tu emoción de hoy. ¡Gracias por participar!", true);
+        return;
+      }
+
+      // Check if emotion registered is negative
+      if (moodValue === 'triste' || moodValue === 'ansioso' || moodValue === 'enojado') {
+        negativeMoodCount++;
+      } else {
+        negativeMoodCount = 0; // reset on positive emotion
+      }
+
+      registeredToday = true;
+      addCoins(2); // Gained daily award
+      
+      // Update visual calendar representation
+      const wedCard = document.querySelector('[data-day="2"]');
+      if (wedCard) {
+        const emojiMap = {
+          alegre: '😊',
+          tranquilo: '😌',
+          triste: '😢',
+          ansioso: '😟',
+          enojado: '😠'
+        };
+        wedCard.querySelector('.status-emoji').innerText = emojiMap[moodValue];
+        wedCard.querySelector('.status-emoji').style.color = 'var(--cyan)';
+        wedCard.querySelector('span:last-child').innerText = 'Registrado ✓';
+        wedCard.querySelector('span:last-child').className = 'text-[10px] text-emerald-400 font-bold';
+      }
+
+      triggerToast("¡Emoción registrada! +2 Eight-Coins añadidas.");
+
+      // Check DECE preventative trigger if student is in continuous negative loops
+      if (negativeMoodCount >= 3) {
+        document.getElementById('dece-alert').classList.remove('hidden');
+        document.getElementById('dece-stat-active').innerText = "3"; // Add alert on administrative statistics
+        
+        // Push a simulated case alert dynamically onto DECE alert dashboard list
+        const list = document.getElementById('dece-alerts-list');
+        const alertHtml = `
+          <div class="glass-sm p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-rose-500/30 bg-rose-500/5">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <h4 class="font-bold text-sm text-white">Estudiante Actual (Tú)</h4>
+                <span class="badge badge-red">Crítico</span>
+              </div>
+              <p class="text-xs text-muted">Ha registrado 3 emociones de vulnerabilidad emocional seguidas.</p>
+              <div class="text-[10px] text-slate-400">Año lectivo: 1ro de Bachillerato "A"</div>
+            </div>
+            <div class="flex gap-2 shrink-0">
+              <button class="btn-cyan py-1.5 px-3 text-xs rounded-lg" onclick="handleDeceAction('Estudiante Actual', 'intervenir')">Agendar Reunión</button>
+            </div>
+          </div>
+        `;
+        list.insertAdjacentHTML('afterbegin', alertHtml);
+      }
+    }
+
+    function selectPromptChip(promptText) {
+      document.getElementById('chat-input').value = promptText;
+    }
+
+    function sendChatMessage() {
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      appendChatMessage(text, true);
+      input.value = '';
+
+      // Mock processing state
+      setTimeout(() => {
+        let response = "";
+        const lowerText = text.toLowerCase();
+
+        if (lowerText.includes('estrés') || lowerText.includes('estresado') || lowerText.includes('exámenes')) {
+          response = "Lamento mucho que te sientas estresado. Te recomiendo tomar un momento para ti. ¿Quieres que hagamos un <strong>ejercicio de respiración cuadrada 4-4-4</strong>? Haz clic en el botón de respiración para calmar el ritmo de tu mente.";
+        } else if (lowerText.includes('ansiedad') || lowerText.includes('ansioso') || lowerText.includes('nervios')) {
+          response = "La ansiedad puede sentirse muy abrumadora. Recuerda que no estás solo y que esto pasará. Intenta apoyar tu planta de los pies en el suelo, respira hondo y busca un vaso de agua fresca. Escribir lo que sientes también libera tensión.";
+        } else if (lowerText.includes('triste') || lowerText.includes('tristeza') || lowerText.includes('desanimado')) {
+          response = "Entiendo perfectamente que haya momentos grises. Está bien sentirse cansado o desanimado. Tómate el tiempo necesario. ¿Hay algún amigo o tutor en el colegio en quien confíes para contarle cómo te sientes? Tu manada te apoya.";
+        } else if (lowerText.includes('compañero') || lowerText.includes('pelea') || lowerText.includes('bullying') || lowerText.includes('excluido')) {
+          response = "Ninguna agresión, discriminación o aislamiento es aceptable. Tu bienestar es clave. Recuerda que puedes realizar un <strong>reporte de convivencia 100% confidencial</strong> a través de nuestra pestaña 'Mi Manada' para que el equipo del DECE actúe discretamente.";
+        } else {
+          response = "Gracias por compartir eso conmigo. Reconocer lo que te pasa por la cabeza es el primer paso para fortalecer tu inteligencia emocional. Te animo a que sigas adelante, ¡tú puedes superar los retos de esta semana!";
+        }
+
+        appendChatMessage(response, false);
+      }, 1000);
+    }
+
+    function appendChatMessage(message, isUser) {
+      const chatArea = document.getElementById('chat-area');
+      const bubble = document.createElement('div');
+      bubble.className = `chat-bubble ${isUser ? 'chat-user' : 'chat-bot'}`;
+      bubble.innerHTML = message;
+      chatArea.appendChild(bubble);
+      chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    // Breathing square guide routine variables
+    let breathingInterval;
+    function startBreathing() {
+      document.getElementById('breathing-exercise').classList.remove('hidden');
+      const animContainer = document.getElementById('breathing-anim-container');
+      
+      let stage = 0; // 0: inhale, 1: hold, 2: exhale
+      let seconds = 4;
+      
+      playSound('breath');
+
+      breathingInterval = setInterval(() => {
+        seconds--;
+        if (seconds < 0) {
+          stage = (stage + 1) % 3;
+          seconds = 4;
+        }
+
+        const stages = [
+          { text: "¡Inhala!", class: "breathing-inhale" },
+          { text: "Mantén el aire...", class: "breathing-hold" },
+          { text: "Exhala despacio...", class: "breathing-exhale" }
+        ];
+
+        document.getElementById('breathing-stage').innerText = stages[stage].text;
+        document.getElementById('breathing-counter').innerText = seconds || "0";
+        
+        animContainer.className = "my-8 " + stages[stage].class;
+      }, 1000);
+    }
+
+    function stopBreathing() {
+      clearInterval(breathingInterval);
+      document.getElementById('breathing-exercise').classList.add('hidden');
+      triggerToast("¡Bien hecho! Excelente ejercicio para recargar tu concentración.");
+      addCoins(15);
+    }
+
+    function showAnimoMessage() {
+      const messages = [
+        "🐺 'No tienes que controlar tus pensamientos; solo debes impedir que ellos te controlen a ti.' — Eres fuerte.",
+        "✨ Un mal día no equivale a una mala vida. Confía en el proceso, tu manada está para cuidarte.",
+        "🦁 Cada paso pequeño, por insignificante que parezca, te acerca a un estado de paz. ¡Buen trabajo hoy!"
+      ];
+      const random = messages[Math.floor(Math.random() * messages.length)];
+      appendChatMessage(random, false);
+    }
+
+    function completeChallenge(id, reward) {
+      if (completedChallengesList.includes(id)) {
+        triggerToast("Ya has completado este reto hoy.", true);
+        return;
+      }
+
+      completedChallengesList.push(id);
+      addCoins(reward);
+
+      // Disable visual representation of challenge card
+      const card = document.getElementById('challenge-card-' + id);
+      if (card) {
+        card.style.opacity = '0.6';
+        const btn = card.querySelector('button');
+        if (btn) {
+          btn.innerText = '✓ Completado';
+          btn.disabled = true;
+          btn.className = 'w-full btn-outline py-1.5 px-3 text-xs rounded-lg mt-2 cursor-not-allowed';
+        }
+      }
+
+      // Update counters
+      const total = completedChallengesList.length;
+      document.getElementById('challenges-count').innerText = `${total + 1} / 4 Completados`;
+      document.getElementById('challenges-progress').style.width = `${((total + 1) / 4) * 100}%`;
+
+      triggerToast(`¡Desafío completado con éxito! +${reward} Eight-Coins añadidas.`);
+    }
+
+    function purchaseReward(name, price) {
+      if (coins < price) {
+        triggerToast("Saldo insuficiente de Eight-Coins. Sigue registrando tus emociones y completando retos.", true);
+        return;
+      }
+
+      addCoins(-price);
+      triggerToast(`¡Canje exitoso! Adquiriste '${name}'. El cupón ha sido guardado en tu Wallet.`);
+      
+      // Dynamically add to transactional history logs
+      const historyTable = document.getElementById('wallet-history-rows');
+      const rowHtml = `
+        <tr>
+          <td class="font-semibold text-rose-400">Canje</td>
+          <td>Hace un momento</td>
+          <td>Canje de Premio: ${name}</td>
+          <td><span class="badge badge-yellow">Procesando</span></td>
+          <td class="text-right text-rose-400 font-bold">-${price} Coins</td>
+        </tr>
+      `;
+      historyTable.insertAdjacentHTML('afterbegin', rowHtml);
+    }
+
+    function simulateNewDeceAlert() {
+      const name = document.getElementById('dece-sim-name').value.trim();
+      const cause = document.getElementById('dece-sim-cause').value.trim();
+      const level = document.getElementById('dece-sim-level').value;
+
+      if (!name || !cause) {
+        triggerToast("Por favor completa los campos para la simulación.", true);
+        return;
+      }
+
+      const list = document.getElementById('dece-alerts-list');
+      const badgeClass = level === 'Crítico' ? 'badge-red' : 'badge-yellow';
+      
+      const newAlertHtml = `
+        <div class="glass-sm p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-rose-500/30 bg-rose-500/5">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <h4 class="font-bold text-sm text-white">${name}</h4>
+              <span class="badge ${badgeClass}">${level}</span>
+            </div>
+            <p class="text-xs text-muted">${cause}</p>
+            <div class="text-[10px] text-slate-400">Año lectivo: Curso Simulado</div>
+          </div>
+          <div class="flex gap-2 shrink-0">
+            <button class="btn-cyan py-1.5 px-3 text-xs rounded-lg" onclick="handleDeceAction('${name}', 'intervenir')">Agendar Reunión</button>
+          </div>
+        </div>
+      `;
+      list.insertAdjacentHTML('afterbegin', newAlertHtml);
+      
+      // Update statistics
+      const alertStat = document.getElementById('dece-stat-active');
+      alertStat.innerText = parseInt(alertStat.innerText) + 1;
+      
+      triggerToast("¡Simulación de alerta enviada al Panel DECE!");
+      
+      // Clear forms
+      document.getElementById('dece-sim-name').value = '';
+      document.getElementById('dece-sim-cause').value = '';
+    }
+
+    function handleDeceAction(studentName, action) {
+      if (action === 'intervenir') {
+        triggerToast(`Se ha agendado una cita confidencial con ${studentName}. Notificación enviada.`);
+      } else if (action === 'ignorar') {
+        triggerToast(`Se ha archivado la alerta de ${studentName}.`);
+      }
+    }
+
+    function alertDeceDirect() {
+      triggerToast("El departamento de DECE ha recibido una señal directa de auxilio. Un profesional se comunicará contigo de inmediato de forma muy cuidadosa y discreta. Respira hondo.");
+      document.getElementById('dece-stat-active').innerText = parseInt(document.getElementById('dece-stat-active').innerText) + 1;
+    }
+
+    function openReportModal() {
+      document.getElementById('report-modal').classList.remove('hidden');
+    }
+
+    function closeReportModal() {
+      document.getElementById('report-modal').classList.add('hidden');
+    }
+
+    function submitAcosoReport() {
+      const victim = document.getElementById('report-victim').value.trim() || "Anónimo";
+      const details = document.getElementById('report-details').value.trim();
+
+      if (!details) {
+        triggerToast("Por favor, ingresa los detalles del informe.", true);
+        return;
+      }
+
+      // Send to counsel mock center
+      const list = document.getElementById('dece-alerts-list');
+      const newAlertHtml = `
+        <div class="glass-sm p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-rose-500/30 bg-rose-500/5">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <h4 class="font-bold text-sm text-white">Reporte de Convivencia</h4>
+              <span class="badge badge-red">Crítico</span>
+            </div>
+            <p class="text-xs text-muted"><strong>Afectado:</strong> ${victim}. <strong>Detalles:</strong> ${details}</p>
+            <div class="text-[10px] text-slate-400">Origen: Denuncia Anónima de Alumno</div>
+          </div>
+          <div class="flex gap-2 shrink-0">
+            <button class="btn-cyan py-1.5 px-3 text-xs rounded-lg" onclick="handleDeceAction('Buzón Convivencia', 'intervenir')">Iniciar investigación</button>
+          </div>
+        </div>
+      `;
+      list.insertAdjacentHTML('afterbegin', newAlertHtml);
+
+      // Stat adjustment
+      const alertStat = document.getElementById('dece-stat-active');
+      alertStat.innerText = parseInt(alertStat.innerText) + 1;
+
+      closeReportModal();
+      triggerToast("¡Tu reporte ha sido enviado confidencialmente al DECE! Gracias por proteger a la manada.");
+      
+      // Clear inputs
+      document.getElementById('report-victim').value = '';
+      document.getElementById('report-details').value = '';
+    }
+
+    // Onload Setup
+    window.onload = function() {
+      // Refresh Lucide Icons vector rendering
+      lucide.createIcons();
+    };
+  </script>
+</body>
+</html>
+octype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WOLVES — Bienestar Emocional</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: '#020817',
+            'navy-light': '#0a1628',
+            cyan: '#00d9ff',
+            'cyan-dim': 'rgba(0, 217, 255, 0.15)',
+            glass: 'rgba(8, 24, 55, 0.75)',
+            'glass-border': 'rgba(0, 217, 255, 0.12)',
+            text: '#ffffff',
+            muted: '#9fb4d8',
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --navy: #020817;
+      --navy-light: #0a1628;
+      --cyan: #00d9ff;
+      --cyan-dim: rgba(0,217,255,0.15);
+      --glass: rgba(8,24,55,0.75);
+      --glass-border: rgba(0,217,255,0.12);
+      --text: #ffffff;
+      --muted: #9fb4d8;
+    }
+    * { box-sizing: border-box; scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; margin: 0; background: var(--navy); color: var(--text); overflow-x: hidden; }
+    
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--navy-light); }
+    ::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--cyan); }
+
+    .glass { background: var(--glass); border: 1px solid var(--glass-border); backdrop-filter: blur(12px); border-radius: 16px; }
+    .glass-sm { background: var(--glass); border: 1px solid var(--glass-border); backdrop-filter: blur(8px); border-radius: 12px; }
+    .glow { box-shadow: 0 0 20px rgba(0,217,255,0.25); }
+    .glow-hover:hover { box-shadow: 0 0 24px rgba(0,217,255,0.35); border-color: var(--cyan); transform: translateY(-2px); }
+    
+    .btn-cyan { background: linear-gradient(135deg, #00d9ff, #00b8d4); color: #020817; font-weight: 700; border: none; border-radius: 12px; padding: 14px 32px; cursor: pointer; transition: all 0.3s; font-size: 0.95rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-cyan:hover { transform: translateY(-2px); box-shadow: 0 4px 24px rgba(0,217,255,0.4); }
+    .btn-cyan:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    
+    .btn-outline { background: transparent; border: 2px solid var(--cyan); color: var(--cyan); border-radius: 12px; padding: 13px 32px; cursor: pointer; transition: all 0.3s; font-weight: 600; font-size: 0.95rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-outline:hover { background: rgba(0,217,255,0.1); }
+    
+    .sidebar { width: 240px; position: fixed; top: 0; left: 0; height: 100%; background: var(--navy-light); border-right: 1px solid var(--glass-border); z-index: 50; overflow-y: auto; transition: transform 0.3s; }
+    .sidebar-link { display: flex; align-items: center; gap: 12px; padding: 11px 20px; color: var(--muted); text-decoration: none; border-radius: 10px; margin: 2px 12px; transition: all 0.2s; cursor: pointer; font-size: 0.9rem; }
+    .sidebar-link:hover, .sidebar-link.active { background: var(--cyan-dim); color: var(--cyan); }
+    
+    .topbar { position: fixed; top: 0; left: 240px; right: 0; height: 60px; background: var(--navy-light); border-bottom: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 40; }
+    .main-content { margin-left: 240px; margin-top: 60px; padding: 28px; min-height: calc(100vh - 60px); transition: margin-left 0.3s; }
+    
+    .section { display: none; }
+    .section.active { display: block; animation: fadeIn 0.4s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .emotion-card { cursor: pointer; transition: all 0.3s; }
+    .emotion-card:hover, .emotion-card.selected { border-color: var(--cyan); box-shadow: 0 0 16px rgba(0,217,255,0.3); transform: scale(1.03); }
+    
+    .emotion-card-wrapper input[type="radio"]:checked + label { border-color: var(--cyan) !important; box-shadow: 0 0 20px rgba(0,217,255,0.4) !important; background: rgba(0, 217, 255, 0.05); }
+    .emotion-card-wrapper input[type="radio"]:checked + label .radio-indicator { background: var(--cyan) !important; opacity: 1 !important; }
+    
+    .chat-bubble { padding: 12px 16px; border-radius: 12px; max-width: 80%; margin-bottom: 10px; font-size: 0.9rem; line-height: 1.5; word-break: break-word; }
+    .chat-bot { background: rgba(0,217,255,0.08); border: 1px solid rgba(0,217,255,0.2); align-self: flex-start; }
+    .chat-user { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); align-self: flex-end; margin-left: auto; }
+    
+    .progress-bar { background: rgba(255,255,255,0.08); border-radius: 999px; height: 6px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #00d9ff, #00b8d4); border-radius: 999px; transition: width 0.5s ease-in-out; }
+    .metric-value { font-size: 1.8rem; font-weight: 800; color: var(--cyan); }
+    
+    .table-wolves { width: 100%; border-collapse: collapse; }
+    .table-wolves th { text-align: left; padding: 12px 16px; color: var(--muted); font-size: 0.75rem; text-transform: uppercase; border-bottom: 1px solid var(--glass-border); }
+    .table-wolves td { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 0.85rem; }
+    
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 600; }
+    .badge-red { background: rgba(255,71,87,0.2); color: #ff4757; }
+    .badge-yellow { background: rgba(255,193,7,0.2); color: #ffc107; }
+    .badge-green { background: rgba(0,230,118,0.2); color: #00e676; }
+    .badge-blue { background: rgba(0, 217, 255, 0.2); color: #00d9ff; }
+
+    .hamburger { display: none; position: fixed; top: 14px; left: 14px; z-index: 60; background: var(--navy-light); border: 1px solid var(--glass-border); border-radius: 8px; padding: 8px; cursor: pointer; color: var(--cyan); }
+    .hero-circle { position: absolute; width: 280px; height: 280px; border-radius: 50%; border: 1px solid rgba(0,217,255,0.15); top: 50%; left: 50%; transform: translate(-50%,-50%); }
+    .hero-circle::before { content: ''; position: absolute; inset: -20px; border-radius: 50%; border: 1px dashed rgba(0,217,255,0.08); }
+    
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    .float-icon { animation: float 3s ease-in-out infinite; position: absolute; font-size: 1.5rem; }
+    
+    /* Interactive breathing circle styling */
+    .breathing-circle-outer { width: 200px; height: 200px; border-radius: 50%; background: rgba(0, 217, 255, 0.03); border: 2px dashed rgba(0, 217, 255, 0.3); display: flex; align-items: center; justify-content: center; transition: all 4s ease-in-out; margin: 0 auto; }
+    .breathing-circle-inner { width: 100px; height: 100px; border-radius: 50%; background: radial-gradient(circle, rgba(0,217,255,0.6) 0%, rgba(0,184,212,0.1) 100%); transition: all 4s ease-in-out; box-shadow: 0 0 30px rgba(0, 217, 255, 0.4); }
+    
+    .breathing-inhale .breathing-circle-outer { transform: scale(1.3); background: rgba(0, 217, 255, 0.1); border-color: rgba(0, 217, 255, 0.8); }
+    .breathing-inhale .breathing-circle-inner { transform: scale(1.6); box-shadow: 0 0 50px rgba(0, 217, 255, 0.8); }
+    .breathing-hold .breathing-circle-outer { transform: scale(1.3); background: rgba(168, 85, 247, 0.15); border-color: rgba(168, 85, 247, 0.8); }
+    .breathing-hold .breathing-circle-inner { transform: scale(1.6); background: radial-gradient(circle, rgba(168,85,247,0.7) 0%, rgba(168,85,247,0.1) 100%); box-shadow: 0 0 50px rgba(168, 85, 247, 0.8); }
+    .breathing-exhale .breathing-circle-outer { transform: scale(0.95); }
+    .breathing-exhale .breathing-circle-inner { transform: scale(0.8); }
+
+    /* Modal Styling */
+    .modal-backdrop { background: rgba(2, 8, 23, 0.85); backdrop-filter: blur(8px); }
+
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .topbar { left: 0; }
+      .main-content { margin-left: 0; padding: 16px; }
+      .hamburger { display: block; }
+    }
+  </style>
+</head>
+<body style="background: rgb(2, 8, 23);">
+
+  <!-- Hamburger Button -->
+  <button class="hamburger" id="hamburger" aria-label="Abrir menú" onclick="toggleSidebar()">
+    <i data-lucide="menu" style="width:22px;height:22px"></i>
+  </button>
+
+  <!-- Sidebar Navigation -->
+  <nav class="sidebar" id="sidebar" aria-label="Navegación principal">
+    <div class="p-5 text-center border-b border-white/10">
+      <!-- High Quality SVG Wolf Logo Fallback -->
+      <div class="w-16 h-16 mx-auto mb-2 relative flex items-center justify-center bg-gradient-to-br from-cyan-400 to-blue-600 rounded-2xl glow">
+        <svg class="w-11 h-11 text-navy" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2L2 9l3 11 7 3 7-3 3-11-10-7zm4.5 13.5L12 18l-4.5-2.5V11L12 9l4.5 2v4.5z"/>
+        </svg>
+      </div>
+      <div class="text-xl font-bold tracking-wider" style="color:var(--cyan)">WOLVES</div>
+      <div class="text-xs mt-1" style="color:var(--muted)">Bienestar Emocional</div>
+    </div>
+    
+    <div class="py-3">
+      <div class="sidebar-link active" data-page="inicio" onclick="navigate('inicio')">
+        <i data-lucide="home" style="width:17px;height:17px"></i> Inicio
+      </div>
+      <div class="sidebar-link" data-page="moodcheck" onclick="navigate('moodcheck')">
+        <i data-lucide="heart" style="width:17px;height:17px"></i> Mood Check
+      </div>
+      <div class="sidebar-link" data-page="wolfai" onclick="navigate('wolfai')">
+        <i data-lucide="bot" style="width:17px;height:17px"></i> Wolf AI
+      </div>
+      <div class="sidebar-link" data-page="retos" onclick="navigate('retos')">
+        <i data-lucide="target" style="width:17px;height:17px"></i> Retos
+      </div>
+      <div class="sidebar-link" data-page="wallet" onclick="navigate('wallet')">
+        <i data-lucide="wallet" style="width:17px;height:17px"></i> Wallet
+      </div>
+      <div class="sidebar-link" data-page="paneldece" onclick="navigate('paneldece')">
+        <i data-lucide="shield" style="width:17px;height:17px"></i> Panel DECE
+      </div>
+      <div class="sidebar-link" data-page="tienda" onclick="navigate('tienda')">
+        <i data-lucide="shopping-bag" style="width:17px;height:17px"></i> Tienda
+      </div>
+      <div class="sidebar-link" data-page="proyeccion" onclick="navigate('proyeccion')">
+        <i data-lucide="bar-chart-2" style="width:17px;height:17px"></i> Proyección
+      </div>
+      <div class="sidebar-link" data-page="equipo" onclick="navigate('equipo')">
+        <i data-lucide="users" style="width:17px;height:17px"></i> Mi Manada
+      </div>
+    </div>
+
+    <!-- Info Pack Banner -->
+    <div class="px-4 pb-4 border-t border-white/10 mt-6 pt-6">
+      <div class="glass p-4 text-center" style="border-left:3px solid var(--cyan)">
+        <p class="text-sm font-bold mb-2" style="color:var(--cyan)">JUNTOS SOMOS<br>MÁS FUERTES</p>
+        <p class="text-xs mb-3" style="color:var(--muted)">Cada emoción cuenta, cada elección importa, cada logro te impulsa.</p>
+        <div class="w-10 h-10 mx-auto rounded-full bg-cyan-dim flex items-center justify-center text-cyan">🐺</div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Topbar Header -->
+  <header class="topbar">
+    <div class="flex items-center gap-3">
+      <span class="text-sm ml-12 md:ml-0" style="color: rgb(159, 180, 216);">¡Hola, Estudiante!</span>
+      <span class="badge badge-green">● Manada activa</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="glass-sm px-3 py-1.5 flex items-center gap-2 text-sm">
+        <span style="color:var(--cyan)">⚡</span>
+        <span id="topbar-coins" class="font-bold text-white">1250</span>
+        <span class="text-xs text-muted">Eight-Coins</span>
+      </div>
+      <div class="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-xs font-bold text-white shadow-md">
+        E
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Space -->
+  <main class="main-content">
+
+    <!-- SECTION: INICIO -->
+    <section class="section active" id="page-inicio">
+      <div class="grid md:grid-cols-2 gap-8 mb-10 items-center">
+        <div>
+          <h1 class="text-3xl md:text-4xl font-extrabold leading-tight mb-4 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
+            BIENESTAR QUE<br>PROTEGE LA MANADA
+          </h1>
+          <p class="mb-6 text-muted">
+            Wolves te acompaña cada día para que reconozcas, entiendas y fortalezcas tus emociones, impulsando el apoyo mutuo y la resiliencia estudiantil.
+          </p>
+          <div class="grid grid-cols-2 gap-3 mb-6">
+            <div class="glass-sm p-3">
+              <div class="text-sm font-bold mb-1 text-white">🧠 IA Emocional</div>
+              <div class="text-xs text-muted">Wolf AI te escucha y te orienta con empatía.</div>
+            </div>
+            <div class="glass-sm p-3">
+              <div class="text-sm font-bold mb-1 text-white">🛡️ Prevención</div>
+              <div class="text-xs text-muted">Acompañamos a quienes necesitan apoyo del DECE.</div>
+            </div>
+            <div class="glass-sm p-3">
+              <div class="text-sm font-bold mb-1 text-white">🏆 Recompensas</div>
+              <div class="text-xs text-muted">Gana Eight-Coins por mantener hábitos saludables.</div>
+            </div>
+            <div class="glass-sm p-3">
+              <div class="text-sm font-bold mb-1 text-white">🤝 Convivencia</div>
+              <div class="text-xs text-muted">Retos grupales para construir unión y empatía.</div>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-3 mb-4">
+            <button class="btn-cyan shadow-lg" onclick="navigate('moodcheck')">
+              <i data-lucide="heart" style="width:16px;height:16px"></i> INICIAR MOOD CHECK
+            </button>
+            <button class="btn-outline" onclick="navigate('wolfai')">
+              <i data-lucide="bot" style="width:16px;height:16px"></i> HABLAR CON WOLF AI
+            </button>
+          </div>
+          <p class="text-xs flex items-center gap-1 text-muted">
+            <i data-lucide="lock" style="width:12px;height:12px" class="text-cyan"></i> 
+            Tu privacidad es nuestra prioridad absoluta. Toda la información personal está cifrada y protegida.
+          </p>
+        </div>
+        
+        <!-- Interactive Cyber-Wolf Mascot Side Panel -->
+        <div class="relative flex items-center justify-center min-h-[400px]">
+          <div class="hero-circle"></div>
+          <!-- Animated Custom SVG Cyber Wolf -->
+          <div class="relative z-10 w-72 h-72 md:w-80 md:h-80 bg-gradient-to-tr from-slate-900 to-cyan-950 rounded-full flex items-center justify-center shadow-2xl glow border border-cyan-500/20 overflow-hidden">
+            <svg class="w-48 h-48 text-cyan animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="rgba(0, 217, 255, 0.1)"/>
+              <circle cx="9" cy="12" r="1.5" fill="var(--cyan)"/>
+              <circle cx="15" cy="12" r="1.5" fill="var(--cyan)"/>
+              <path d="M12 15s1-1.5 2-1.5c1 0 1 .5 1 .5" stroke-linecap="round"/>
+              <path d="M12 15s-1-1.5-2-1.5c-1 0-1 .5-1 .5" stroke-linecap="round"/>
+              <path d="M12 15v2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="glass-sm p-3 absolute bottom-2 right-4 z-20 max-w-[190px] glow animate-bounce">
+            <p class="text-xs font-bold text-cyan">Hola, soy Wolf AI 🐺</p>
+            <p class="text-xs text-muted">Te guiaré hoy en tu bienestar mental.</p>
+          </div>
+          <span class="float-icon text-xl" style="top:15%;left:10%;animation-delay:0s">❤️</span>
+          <span class="float-icon text-xl" style="top:20%;right:15%;animation-delay:0.5s">😊</span>
+          <span class="float-icon text-xl" style="bottom:20%;left:15%;animation-delay:1s">🛡️</span>
+          <span class="float-icon text-xl" style="bottom:15%;right:10%;animation-delay:1.5s">🪙</span>
+        </div>
+      </div>
+
+      <!-- Quick Access Modules -->
+      <h2 class="text-xl font-bold mb-4 text-cyan">Acceso Rápido</h2>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-10">
+        <div class="glass p-4 text-center cursor-pointer transition glow-hover" onclick="navigate('moodcheck')">
+          <div class="text-2xl mb-2">❤️</div>
+          <div class="font-semibold text-sm mb-1">Mood Check</div>
+          <div class="text-xs text-muted">Registra cómo te sientes hoy.</div>
+          <div class="mt-2 text-xs text-cyan">→</div>
+        </div>
+        <div class="glass p-4 text-center cursor-pointer transition glow-hover" onclick="navigate('wolfai')">
+          <div class="text-2xl mb-2">🤖</div>
+          <div class="font-semibold text-sm mb-1">Wolf AI</div>
+          <div class="text-xs text-muted">Tu asistente de inteligencia emocional.</div>
+          <div class="mt-2 text-xs text-cyan">→</div>
+        </div>
+        <div class="glass p-4 text-center cursor-pointer transition glow-hover" onclick="navigate('retos')">
+          <div class="text-2xl mb-2">🎯</div>
+          <div class="font-semibold text-sm mb-1">Retos</div>
+          <div class="text-xs text-muted">Completa hábitos saludables.</div>
+          <div class="mt-2 text-xs text-cyan">→</div>
+        </div>
+        <div class="glass p-4 text-center cursor-pointer transition glow-hover" onclick="navigate('wallet')">
+          <div class="text-2xl mb-2">💰</div>
+          <div class="font-semibold text-sm mb-1">Wallet</div>
+          <div class="text-xs text-muted">Monedas acumuladas e historial.</div>
+          <div class="mt-2 text-xs text-cyan">→</div>
+        </div>
+        <div class="glass p-4 text-center cursor-pointer transition glow-hover" onclick="navigate('paneldece')">
+          <div class="text-2xl mb-2">🛡️</div>
+          <div class="font-semibold text-sm mb-1">Panel DECE</div>
+          <div class="text-xs text-muted">Modulo para consejeros y tutores.</div>
+          <div class="mt-2 text-xs text-cyan">→</div>
+        </div>
+        <div class="glass p-4 text-center cursor-pointer transition glow-hover" onclick="navigate('tienda')">
+          <div class="text-2xl mb-2">🛒</div>
+          <div class="font-semibold text-sm mb-1">Tienda</div>
+          <div class="text-xs text-muted">Canjea tus Eight-Coins por premios.</div>
+          <div class="mt-2 text-xs text-cyan">→</div>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Grid -->
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div class="glass p-4 text-center">
+          <div class="metric-value" id="stat-students">412</div>
+          <div class="text-xs mt-1 text-muted">Estudiantes en la manada</div>
+        </div>
+        <div class="glass p-4 text-center">
+          <div class="metric-value" id="stat-alerts">2</div>
+          <div class="text-xs mt-1 text-muted">Alertas preventivas hoy</div>
+        </div>
+        <div class="glass p-4 text-center">
+          <div class="metric-value" id="stat-coins">1.250</div>
+          <div class="text-xs mt-1 text-muted">Eight-Coins ganadas</div>
+        </div>
+        <div class="glass p-4 text-center">
+          <div class="metric-value">98.4%</div>
+          <div class="text-xs mt-1 text-muted">Participación general</div>
+        </div>
+        <div class="glass p-4 text-center col-span-2 md:col-span-1 border-l-4 border-cyan">
+          <div class="text-xs font-bold text-cyan">MANADA PROTEGIDA</div>
+          <div class="text-[11px] mt-1 text-muted">Construyendo empatía para erradicar el acoso y la ansiedad escolar.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: MOOD CHECK -->
+    <section class="section" id="page-moodcheck">
+      <h1 class="text-3xl font-bold mb-2 text-cyan">Registra tu Emoción Hoy</h1>
+      <p class="mb-8 text-muted">¿Cómo te sientes en este momento? Tu registro diario ayuda a comprender la salud emocional colectiva.</p>
+      
+      <!-- Interactive Grid of Emotions with dynamic SVGs representing Wolf Expressions -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-8" id="emotion-grid">
+        
+        <!-- Happy Mood -->
+        <div class="emotion-card-wrapper">
+          <input type="radio" name="emotion" id="emotion-alegre" value="alegre" class="hidden">
+          <label for="emotion-alegre" class="block glass p-5 text-center transition emotion-card border-2 border-green-500/20">
+            <div class="flex justify-center mb-3">
+              <div class="w-5 h-5 rounded-full border-2 border-emerald-400 flex items-center justify-center">
+                <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 opacity-0 radio-indicator transition-all"></div>
+              </div>
+            </div>
+            <!-- Custom Happy Wolf SVG -->
+            <svg class="w-24 h-24 mx-auto mb-3 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 2l1.5 5h5.5l-4 3 2 6.5-5-4.5-5 4.5 2-6.5-4-3h5.5z"/>
+              <circle cx="8" cy="11" r="1.5" fill="currentColor"/>
+              <circle cx="16" cy="11" r="1.5" fill="currentColor"/>
+              <path d="M9 15c1.5 1.5 4.5 1.5 6 0" stroke-linecap="round"/>
+            </svg>
+            <div class="font-bold text-sm mb-1 text-emerald-400">Alegre</div>
+            <div class="text-xs text-muted">Lleno de energía y positivismo.</div>
+          </label>
+        </div>
+
+        <!-- Calm Mood -->
+        <div class="emotion-card-wrapper">
+          <input type="radio" name="emotion" id="emotion-tranquilo" value="tranquilo" class="hidden">
+          <label for="emotion-tranquilo" class="block glass p-5 text-center transition emotion-card border-2 border-cyan-500/20">
+            <div class="flex justify-center mb-3">
+              <div class="w-5 h-5 rounded-full border-2 border-cyan-400 flex items-center justify-center">
+                <div class="w-2.5 h-2.5 rounded-full bg-cyan-400 opacity-0 radio-indicator transition-all"></div>
+              </div>
+            </div>
+            <!-- Custom Calm Wolf SVG -->
+            <svg class="w-24 h-24 mx-auto mb-3 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 2L4 12l8 10 8-10z"/>
+              <line x1="7" y1="11" x2="10" y2="11" stroke-linecap="round"/>
+              <line x1="14" y1="11" x2="17" y2="11" stroke-linecap="round"/>
+              <path d="M10 15h4" stroke-linecap="round"/>
+            </svg>
+            <div class="font-bold text-sm mb-1 text-cyan-400">Tranquilo</div>
+            <div class="text-xs text-muted">En paz, centrado y relajado.</div>
+          </label>
+        </div>
+
+        <!-- Sad Mood -->
+        <div class="emotion-card-wrapper">
+          <input type="radio" name="emotion" id="emotion-triste" value="triste" class="hidden">
+          <label for="emotion-triste" class="block glass p-5 text-center transition emotion-card border-2 border-purple-500/20">
+            <div class="flex justify-center mb-3">
+              <div class="w-5 h-5 rounded-full border-2 border-purple-400 flex items-center justify-center">
+                <div class="w-2.5 h-2.5 rounded-full bg-purple-400 opacity-0 radio-indicator transition-all"></div>
+              </div>
+            </div>
+            <!-- Custom Sad Wolf SVG -->
+            <svg class="w-24 h-24 mx-auto mb-3 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 2l3 6 7 1-5 5.5 1.5 6.5-6.5-3.5L5.5 21 7 14.5 2 9l7-1z"/>
+              <ellipse cx="8" cy="11" rx="1.5" ry="1" fill="currentColor"/>
+              <ellipse cx="16" cy="11" rx="1.5" ry="1" fill="currentColor"/>
+              <path d="M15 16c-1-1-5-1-6 0" stroke-linecap="round"/>
+            </svg>
+            <div class="font-bold text-sm mb-1 text-purple-400">Triste</div>
+            <div class="text-xs text-muted">Desanimado o con poca motivación.</div>
+          </label>
+        </div>
+
+        <!-- Anxious Mood -->
+        <div class="emotion-card-wrapper">
+          <input type="radio" name="emotion" id="emotion-ansioso" value="ansioso" class="hidden">
+          <label for="emotion-ansioso" class="block glass p-5 text-center transition emotion-card border-2 border-yellow-500/20">
+            <div class="flex justify-center mb-3">
+              <div class="w-5 h-5 rounded-full border-2 border-yellow-400 flex items-center justify-center">
+                <div class="w-2.5 h-2.5 rounded-full bg-yellow-400 opacity-0 radio-indicator transition-all"></div>
+              </div>
+            </div>
+            <!-- Custom Anxious Wolf SVG -->
+            <svg class="w-24 h-24 mx-auto mb-3 text-yellow-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 2L2 22h20z"/>
+              <circle cx="8" cy="13" r="1.5" fill="currentColor"/>
+              <circle cx="16" cy="13" r="1.5" fill="currentColor"/>
+              <circle cx="12" cy="17" r="1" fill="currentColor"/>
+            </svg>
+            <div class="font-bold text-sm mb-1 text-yellow-400">Ansioso</div>
+            <div class="text-xs text-muted">Preocupado o sintiendo agobio.</div>
+          </label>
+        </div>
+
+        <!-- Angry Mood -->
+        <div class="emotion-card-wrapper">
+          <input type="radio" name="emotion" id="emotion-enojado" value="enojado" class="hidden">
+          <label for="emotion-enojado" class="block glass p-5 text-center transition emotion-card border-2 border-rose-500/20">
+            <div class="flex justify-center mb-3">
+              <div class="w-5 h-5 rounded-full border-2 border-rose-400 flex items-center justify-center">
+                <div class="w-2.5 h-2.5 rounded-full bg-rose-400 opacity-0 radio-indicator transition-all"></div>
+              </div>
+            </div>
+            <!-- Custom Angry Wolf SVG -->
+            <svg class="w-24 h-24 mx-auto mb-3 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 2l10 10-10 10L2 12z"/>
+              <path d="M6 10l3 1" stroke-linecap="round"/>
+              <path d="M18 10l-3 1" stroke-linecap="round"/>
+              <path d="M10 16c1-1 3-1 4 0" stroke-linecap="round"/>
+            </svg>
+            <div class="font-bold text-sm mb-1 text-rose-400">Enojado</div>
+            <div class="text-xs text-muted">Frustrado, molesto o irritado.</div>
+          </label>
+        </div>
+
+      </div>
+
+      <!-- Submit & Feedback -->
+      <div class="flex flex-col items-center justify-center mb-8">
+        <button class="btn-cyan px-10 py-4 text-lg shadow-lg" id="btn-register-mood" onclick="saveMoodCheck()">
+          REGISTRAR EMOCIÓN DE HOY
+        </button>
+        <span class="text-xs text-cyan mt-3 font-semibold">+2 Eight-Coins por tu registro diario ✓</span>
+      </div>
+
+      <!-- Weekly Tracker Calendar -->
+      <div class="glass p-5 mb-6">
+        <h3 class="font-bold mb-4 text-base text-cyan flex items-center gap-2">
+          <i data-lucide="calendar"></i> Tu Seguimiento Semanal
+        </h3>
+        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 text-center" id="weekly-track">
+          <!-- Mon -->
+          <div class="glass-sm p-3 text-xs flex flex-col items-center" data-day="0">
+            <div class="text-xl font-bold mb-1 status-emoji text-slate-500">😊</div>
+            <span class="font-semibold mb-1">Lunes</span>
+            <span class="text-[10px] text-emerald-400 font-bold">Registrado</span>
+          </div>
+          <!-- Tue -->
+          <div class="glass-sm p-3 text-xs flex flex-col items-center" data-day="1">
+            <div class="text-xl font-bold mb-1 status-emoji text-slate-500">😐</div>
+            <span class="font-semibold mb-1">Martes</span>
+            <span class="text-[10px] text-emerald-400 font-bold">Registrado</span>
+          </div>
+          <!-- Wed -->
+          <div class="glass-sm p-3 text-xs flex flex-col items-center" data-day="2">
+            <div class="text-xl font-bold mb-1 status-emoji text-slate-500">-</div>
+            <span class="font-semibold mb-1">Miércoles</span>
+            <span class="text-[10px] text-yellow-500">Hoy</span>
+          </div>
+          <!-- Thu -->
+          <div class="glass-sm p-3 text-xs flex flex-col items-center" data-day="3">
+            <div class="text-xl font-bold mb-1 status-emoji text-slate-500">-</div>
+            <span class="font-semibold mb-1">Jueves</span>
+            <span class="text-[10px] text-muted">Pendiente</span>
+          </div>
+          <!-- Fri -->
+          <div class="glass-sm p-3 text-xs flex flex-col items-center" data-day="4">
+            <div class="text-xl font-bold mb-1 status-emoji text-slate-500">-</div>
+            <span class="font-semibold mb-1">Viernes</span>
+            <span class="text-[10px] text-muted">Pendiente</span>
+          </div>
+          <!-- Sat -->
+          <div class="glass-sm p-3 text-xs flex flex-col items-center" data-day="5">
+            <div class="text-xl font-bold mb-1 status-emoji text-slate-500">-</div>
+            <span class="font-semibold mb-1">Sábado</span>
+            <span class="text-[10px] text-muted">Pendiente</span>
+          </div>
+          <!-- Sun -->
+          <div class="glass-sm p-3 text-xs flex flex-col items-center" data-day="6">
+            <div class="text-xl font-bold mb-1 status-emoji text-slate-500">-</div>
+            <span class="font-semibold mb-1">Domingo</span>
+            <span class="text-[10px] text-muted">Pendiente</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Warning system integration (DECE trigger notice) -->
+      <div id="dece-alert" class="hidden glass p-4 border border-rose-500/40 bg-rose-500/5 rounded-xl">
+        <div class="flex items-start gap-3">
+          <span class="text-2xl">⚠️</span>
+          <div>
+            <p class="font-bold text-rose-400">Alerta Preventiva Activada para el DECE</p>
+            <p class="text-xs text-muted">Hemos detectado múltiples días con emociones complejas. No te preocupes, un profesional del DECE te contactará para ofrecerte apoyo confidencial y amigable. ¡No estás solo!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: WOLF AI -->
+    <section class="section" id="page-wolfai">
+      <h1 class="text-3xl font-bold mb-2 text-cyan">Wolf AI</h1>
+      <p class="mb-6 text-muted">Tu confidente y consultor de inteligencia emocional, disponible las 24 horas.</p>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        
+        <!-- Main Chat Frame -->
+        <div class="md:col-span-2 flex flex-col">
+          
+          <!-- Interstitial Breathing exercise overlay -->
+          <div id="breathing-exercise" class="glass p-6 mb-4 hidden text-center border-2 border-cyan-400/30">
+            <h3 class="font-bold text-lg mb-2 text-cyan">Respiración Guiada 4-4-4</h3>
+            <p class="text-xs text-muted mb-4">Sigue el ritmo de la esfera de luz para relajarte.</p>
+            
+            <div class="my-8" id="breathing-anim-container">
+              <div class="breathing-circle-outer">
+                <div class="breathing-circle-inner"></div>
+              </div>
+            </div>
+
+            <div class="space-y-1 mb-6">
+              <div id="breathing-stage" class="text-2xl font-bold text-cyan tracking-wider">Inhala profundamente...</div>
+              <div id="breathing-counter" class="text-4xl font-extrabold text-white">4</div>
+            </div>
+            
+            <button class="btn-outline py-2 px-6 text-sm" onclick="stopBreathing()">Terminar ejercicio</button>
+          </div>
+
+          <!-- Chat Core Interface -->
+          <div class="glass p-5 flex flex-col justify-between min-h-[460px]">
+            
+            <!-- Chat Partner Title bar -->
+            <div class="flex items-center gap-3 mb-4 pb-3 border-b border-white/10">
+              <div class="w-10 h-10 rounded-full bg-cyan-900/40 border border-cyan-400/30 flex items-center justify-center text-xl">
+                🐺
+              </div>
+              <div>
+                <h3 class="font-bold text-sm text-cyan">Wolf AI Companion</h3>
+                <p class="text-[11px] text-emerald-400 flex items-center gap-1">
+                  <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span> Activo • Confidencial
+                </p>
+              </div>
+            </div>
+
+            <!-- Messages Window -->
+            <div id="chat-area" class="flex flex-col gap-3 mb-4 overflow-y-auto max-h-[250px] pr-2">
+              <div class="chat-bubble chat-bot">
+                ¡Hola! Soy <strong>Wolf AI</strong>. Estoy aquí para escucharte en un espacio seguro y libre de juicios. ¿Cómo ha estado tu día escolar? ¿Quieres hablar de algo?
+              </div>
+            </div>
+
+            <!-- Helper Prompt Chips -->
+            <div class="mb-4">
+              <p class="text-[11px] mb-2 text-muted">Sugerencias para iniciar:</p>
+              <div class="flex flex-wrap gap-1.5">
+                <button class="glass-sm px-3 py-1.5 text-xs text-cyan hover:border-cyan hover:bg-cyan-dim transition" onclick="selectPromptChip('Siento mucho estrés por los exámenes')">😟 Estrés escolar</button>
+                <button class="glass-sm px-3 py-1.5 text-xs text-cyan hover:border-cyan hover:bg-cyan-dim transition" onclick="selectPromptChip('Quiero calmar la ansiedad')">🌿 Controlar ansiedad</button>
+                <button class="glass-sm px-3 py-1.5 text-xs text-cyan hover:border-cyan hover:bg-cyan-dim transition" onclick="selectPromptChip('Tuve un desacuerdo con un compañero de clase')">🤝 Desacuerdo social</button>
+                <button class="glass-sm px-3 py-1.5 text-xs text-cyan hover:border-cyan hover:bg-cyan-dim transition" onclick="startBreathing()">🌬️ Ejercicio de respiración</button>
+              </div>
+            </div>
+
+            <!-- Chat Entry bar -->
+            <div class="flex gap-2">
+              <input type="text" id="chat-input" placeholder="Pregúntale algo a Wolf AI..." class="flex-1 glass-sm px-4 py-3 bg-slate-950/40 border border-white/10 text-sm outline-none focus:border-cyan text-white rounded-xl">
+              <button class="btn-cyan p-3 rounded-xl flex items-center justify-center w-12 h-12" onclick="sendChatMessage()">
+                <i data-lucide="send" style="width:18px;height:18px"></i>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Sidebar Recommendations Panel -->
+        <div class="space-y-4">
+          <div class="glass p-5">
+            <h3 class="font-bold mb-3 text-sm text-cyan flex items-center gap-2">
+              <i data-lucide="sparkles"></i> Actividades sugeridas
+            </h3>
+            <div class="space-y-2">
+              <button class="w-full text-left glass-sm p-3 rounded-lg hover:border-cyan hover:bg-cyan-dim/5 transition" onclick="startBreathing()">
+                <div class="font-semibold text-xs text-white">🌬️ Respiración Cuadrada (4-4-4)</div>
+                <div class="text-[10px] text-muted mt-1">Ideal para momentos de tensión extrema o pánico.</div>
+              </button>
+              <button class="w-full text-left glass-sm p-3 rounded-lg hover:border-cyan hover:bg-cyan-dim/5 transition" onclick="showAnimoMessage()">
+                <div class="font-semibold text-xs text-white">💬 Recibir Afirmación Positiva</div>
+                <div class="text-[10px] text-muted mt-1">Un recordatorio motivacional de tu valor en la manada.</div>
+              </button>
+              <button class="w-full text-left glass-sm p-3 rounded-lg hover:border-cyan hover:bg-cyan-dim/5 transition" onclick="navigate('retos')">
+                <div class="font-semibold text-xs text-white">🎯 Reto de Conectividad Humana</div>
+                <div class="text-[10px] text-muted mt-1">Pequeños pasos para mejorar tus relaciones sociales.</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Helpline Information card -->
+          <div class="glass p-5 border-l-4 border-yellow-500">
+            <h4 class="font-bold text-xs text-yellow-500 mb-1">🆘 ¿Necesitas ayuda inmediata?</h4>
+            <p class="text-[11px] text-muted mb-2">Si estás pasando por una crisis grave o consideras que no puedes manejar tus emociones, pide asistencia confidencial al DECE de tu colegio de inmediato.</p>
+            <button class="w-full btn-outline py-2 px-3 text-[10px] border-yellow-500 text-yellow-500 hover:bg-yellow-500/10 rounded-lg font-bold" onclick="alertDeceDirect()">
+              NOTIFICAR DE EMERGENCIA AL DECE
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: RETOS -->
+    <section class="section" id="page-retos">
+      <div class="flex flex-col md:flex-row md:items-center justify-between mb-6">
+        <div>
+          <h1 class="text-3xl font-bold text-cyan">Retos de Cuidado y Empatía</h1>
+          <p class="text-muted">Cumple desafíos diarios o semanales para fortalecer tu mente y apoyar a tus amigos.</p>
+        </div>
+        <!-- Progress representation -->
+        <div class="glass-sm p-3 mt-4 md:mt-0 flex items-center gap-3">
+          <div>
+            <div class="text-xs text-muted">Retos de hoy</div>
+            <div class="font-bold text-sm text-cyan" id="challenges-count">1 / 4 Completados</div>
+          </div>
+          <div class="w-16 h-2 progress-bar">
+            <div class="progress-fill" id="challenges-progress" style="width: 25%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Challenge categories tab system -->
+      <div class="grid md:grid-cols-3 gap-6">
+        
+        <!-- Individual Mental Wellness Challenges -->
+        <div class="glass p-5 space-y-4">
+          <h3 class="font-bold text-sm text-cyan flex items-center gap-2 border-b border-white/10 pb-2">
+            <i data-lucide="user"></i> Cuidado Personal
+          </h3>
+          
+          <!-- Card Challenge 1 -->
+          <div class="glass-sm p-4 space-y-2 relative border-l-4 border-cyan" id="challenge-card-1">
+            <div class="flex justify-between items-start">
+              <span class="badge badge-blue">Diario</span>
+              <span class="text-cyan text-xs font-bold flex items-center gap-0.5">⚡ 15 Coins</span>
+            </div>
+            <h4 class="font-bold text-xs text-white">Completar 1 ejercicio de respiración</h4>
+            <p class="text-[10px] text-muted">Tómate 3 minutos de tu jornada para regular tu ritmo cardíaco y calmar tu mente.</p>
+            <button class="w-full btn-cyan py-1.5 px-3 text-xs rounded-lg mt-2" onclick="completeChallenge(1, 15)">Completar ahora</button>
+          </div>
+
+          <!-- Card Challenge 2 -->
+          <div class="glass-sm p-4 space-y-2 relative border-l-4 border-cyan" id="challenge-card-2">
+            <div class="flex justify-between items-start">
+              <span class="badge badge-blue">Diario</span>
+              <span class="text-cyan text-xs font-bold flex items-center gap-0.5">⚡ 10 Coins</span>
+            </div>
+            <h4 class="font-bold text-xs text-white">Registrar tu estado de ánimo</h4>
+            <p class="text-[10px] text-muted">Cumple con la bitácora emocional diaria para llevar estadísticas precisas de ti.</p>
+            <button class="w-full btn-cyan py-1.5 px-3 text-xs rounded-lg mt-2" onclick="completeChallenge(2, 10)">Completar ahora</button>
+          </div>
+        </div>
+
+        <!-- Social and Empathy (Anti-Bullying) Challenges -->
+        <div class="glass p-5 space-y-4">
+          <h3 class="font-bold text-sm text-cyan flex items-center gap-2 border-b border-white/10 pb-2">
+            <i data-lucide="users"></i> Empatía Escolar
+          </h3>
+
+          <!-- Card Challenge 3 -->
+          <div class="glass-sm p-4 space-y-2 relative border-l-4 border-emerald-400" id="challenge-card-3">
+            <div class="flex justify-between items-start">
+              <span class="badge badge-green">Semanal</span>
+              <span class="text-emerald-400 text-xs font-bold flex items-center gap-0.5">⚡ 30 Coins</span>
+            </div>
+            <h4 class="font-bold text-xs text-white">Enviar una nota de aprecio anónima</h4>
+            <p class="text-[10px] text-muted">Usa Wolves para enviarle un mensaje anónimo de apoyo a un compañero que notes alejado o desanimado.</p>
+            <button class="w-full btn-cyan py-1.5 px-3 text-xs rounded-lg mt-2" onclick="completeChallenge(3, 30)">Completar ahora</button>
+          </div>
+
+          <!-- Card Challenge 4 -->
+          <div class="glass-sm p-4 space-y-2 relative border-l-4 border-emerald-400" id="challenge-card-4">
+            <div class="flex justify-between items-start">
+              <span class="badge badge-green">Semanal</span>
+              <span class="text-emerald-400 text-xs font-bold flex items-center gap-0.5">⚡ 25 Coins</span>
+            </div>
+            <h4 class="font-bold text-xs text-white">Saludar de forma positiva a 3 personas</h4>
+            <p class="text-[10px] text-muted">Practica romper el hielo escolar. Un saludo amable puede cambiar drásticamente el día de alguien.</p>
+            <button class="w-full btn-cyan py-1.5 px-3 text-xs rounded-lg mt-2" onclick="completeChallenge(4, 25)">Completar ahora</button>
+          </div>
+        </div>
+
+        <!-- Collective/Classroom Level Challenges -->
+        <div class="glass p-5 space-y-4">
+          <h3 class="font-bold text-sm text-cyan flex items-center gap-2 border-b border-white/10 pb-2">
+            <i data-lucide="trophy"></i> Desafío Colectivo
+          </h3>
+
+          <!-- Class Challenge Card -->
+          <div class="glass-sm p-4 space-y-3 relative border-l-4 border-yellow-500">
+            <div class="flex justify-between items-start">
+              <span class="badge badge-yellow">Manada</span>
+              <span class="text-yellow-500 text-xs font-bold flex items-center gap-0.5">⚡ Premio de Grupo</span>
+            </div>
+            <h4 class="font-bold text-xs text-white">La Manada Unida</h4>
+            <p class="text-[10px] text-muted">Para que toda la clase gane el "Pase de Almuerzo Libre", al menos el 85% de los alumnos debe registrar emociones 5 días consecutivos.</p>
+            
+            <div class="space-y-1">
+              <div class="flex justify-between text-[10px] text-muted">
+                <span>Progreso del Curso</span>
+                <span>72%</span>
+              </div>
+              <div class="w-full h-2 progress-bar">
+                <div class="progress-fill" style="width: 72%"></div>
+              </div>
+            </div>
+            <div class="text-[10px] text-yellow-400 font-semibold bg-yellow-400/10 p-2 rounded border border-yellow-400/20 text-center">
+              Faltan solo 12 estudiantes para la meta general
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: WALLET (EIGHT-COINS) -->
+    <section class="section" id="page-wallet">
+      <h1 class="text-3xl font-bold mb-2 text-cyan">Mi Wallet</h1>
+      <p class="mb-6 text-muted">El bienestar es gratificante. Administra tus Eight-Coins ganadas a través de hábitos saludables.</p>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        
+        <!-- Large Wallet Balance Indicator -->
+        <div class="glass p-6 text-center flex flex-col justify-center items-center relative overflow-hidden">
+          <div class="absolute -top-10 -right-10 w-32 h-32 bg-cyan-400/10 rounded-full blur-xl"></div>
+          <div class="text-5xl mb-4 text-cyan animate-pulse">⚡</div>
+          <div class="text-xs text-muted uppercase tracking-wider font-semibold">Balance Disponible</div>
+          <div class="text-5xl font-extrabold text-white my-2" id="wallet-balance-big">1.250</div>
+          <div class="text-xs text-cyan font-bold mb-4">Equivalente a bienestar y resiliencia</div>
+          <button class="btn-cyan w-full text-sm" onclick="navigate('tienda')">
+            IR A LA TIENDA DE PREMIOS
+          </button>
+        </div>
+
+        <!-- Earning stats -->
+        <div class="glass p-6 space-y-4 md:col-span-2">
+          <h3 class="font-bold text-base text-cyan">Distribución de Ingresos</h3>
+          <p class="text-xs text-muted">Mira de qué manera estás consiguiendo fortalecer tu puntaje emocional:</p>
+          
+          <div class="space-y-3">
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="text-white">Registros de Mood Checks (40%)</span>
+                <span class="text-cyan">500 Coins</span>
+              </div>
+              <div class="w-full h-2.5 progress-bar">
+                <div class="progress-fill" style="width: 40%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="text-white">Ejercicios de Respiración (30%)</span>
+                <span class="text-cyan">375 Coins</span>
+              </div>
+              <div class="w-full h-2.5 progress-bar">
+                <div class="progress-fill" style="width: 30%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="text-white">Desafíos de Empatía (20%)</span>
+                <span class="text-cyan">250 Coins</span>
+              </div>
+              <div class="w-full h-2.5 progress-bar">
+                <div class="progress-fill" style="width: 20%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="text-white">Retos Colectivos (10%)</span>
+                <span class="text-cyan">125 Coins</span>
+              </div>
+              <div class="w-full h-2.5 progress-bar">
+                <div class="progress-fill" style="width: 10%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Wallet Transaction History -->
+      <div class="glass p-5 mt-6">
+        <h3 class="font-bold text-base text-cyan mb-4 flex items-center gap-2">
+          <i data-lucide="history"></i> Historial de Movimientos
+        </h3>
+        <div class="overflow-x-auto">
+          <table class="table-wolves">
+            <thead>
+              <tr>
+                <th>Operación</th>
+                <th>Fecha</th>
+                <th>Concepto</th>
+                <th>Estado</th>
+                <th class="text-right">Monto</th>
+              </tr>
+            </thead>
+            <tbody id="wallet-history-rows">
+              <tr>
+                <td class="font-semibold text-emerald-400">Ingreso</td>
+                <td>Hoy, 08:30 AM</td>
+                <td>Registro emocional (Mood Check diario)</td>
+                <td><span class="badge badge-green">Completado</span></td>
+                <td class="text-right text-emerald-400 font-bold">+2 Coins</td>
+              </tr>
+              <tr>
+                <td class="font-semibold text-emerald-400">Ingreso</td>
+                <td>Ayer, 04:15 PM</td>
+                <td>Reto individual: Respirar 3 min</td>
+                <td><span class="badge badge-green">Completado</span></td>
+                <td class="text-right text-emerald-400 font-bold">+15 Coins</td>
+              </tr>
+              <tr>
+                <td class="font-semibold text-rose-400">Canje</td>
+                <td>25 de Mayo, 11:00 AM</td>
+                <td>Comisión: Taza Oficial Wolves</td>
+                <td><span class="badge badge-blue">Enviado</span></td>
+                <td class="text-right text-rose-400 font-bold">-350 Coins</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: PANEL DECE (CONSEJERÍA ESTUDIANTIL) -->
+    <section class="section" id="page-paneldece">
+      <div class="flex flex-col md:flex-row md:items-center justify-between mb-6">
+        <div>
+          <h1 class="text-3xl font-bold text-rose-400">Panel de Acompañamiento DECE</h1>
+          <p class="text-muted">Espacio administrativo para psicólogos, tutores y personal de orientación del plantel.</p>
+        </div>
+        <div class="flex items-center gap-2 mt-4 md:mt-0">
+          <span class="badge badge-red text-sm py-1.5 px-3">Modo Administrador</span>
+        </div>
+      </div>
+
+      <!-- Quick Metrics for the Counselor -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div class="glass p-4 border-l-4 border-rose-500">
+          <div class="text-xs text-muted uppercase">Alertas Activas</div>
+          <div class="text-3xl font-bold text-rose-400 mt-1" id="dece-stat-active">2</div>
+          <div class="text-[10px] text-muted">Estudiantes que requieren soporte</div>
+        </div>
+        <div class="glass p-4 border-l-4 border-yellow-500">
+          <div class="text-xs text-muted uppercase">En Seguimiento</div>
+          <div class="text-3xl font-bold text-yellow-500 mt-1">4</div>
+          <div class="text-[10px] text-muted">Sesiones programadas para esta semana</div>
+        </div>
+        <div class="glass p-4 border-l-4 border-emerald-400">
+          <div class="text-xs text-muted uppercase">Casos Resueltos</div>
+          <div class="text-3xl font-bold text-emerald-400 mt-1">18</div>
+          <div class="text-[10px] text-muted">Estudiantes estabilizados con éxito</div>
+        </div>
+        <div class="glass p-4 border-l-4 border-cyan">
+          <div class="text-xs text-muted uppercase">Índice de Clima Escolar</div>
+          <div class="text-3xl font-bold text-cyan mt-1">87%</div>
+          <div class="text-[10px] text-muted">Nivel promedio de bienestar</div>
+        </div>
+      </div>
+
+      <div class="grid lg:grid-cols-3 gap-6">
+        
+        <!-- Alerts & Action Cases (List of students) -->
+        <div class="glass p-5 lg:col-span-2 space-y-4">
+          <h3 class="font-bold text-sm text-cyan flex items-center justify-between">
+            <span>🔴 Alertas de Bienestar en Tiempo Real</span>
+            <span class="text-xs text-muted font-normal">Identificación temprana de situaciones críticas</span>
+          </h3>
+
+          <div class="space-y-3" id="dece-alerts-list">
+            
+            <!-- Alert Case 1 -->
+            <div class="glass-sm p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-rose-500/30 bg-rose-500/5">
+              <div class="space-y-1">
+                <div class="flex items-center gap-2">
+                  <h4 class="font-bold text-sm text-white">Mateo Villavicencio</h4>
+                  <span class="badge badge-red">Crítico</span>
+                </div>
+                <p class="text-xs text-muted">Registró <strong>Ansioso / Enojado</strong> durante 4 días seguidos de exámenes.</p>
+                <div class="text-[10px] text-slate-400">Año lectivo: 1ro de Bachillerato "B"</div>
+              </div>
+              <div class="flex gap-2 shrink-0">
+                <button class="btn-cyan py-1.5 px-3 text-xs rounded-lg" onclick="handleDeceAction('Mateo Villavicencio', 'intervenir')">Agendar Reunión</button>
+                <button class="btn-outline py-1.5 px-3 text-xs border-slate-500 text-slate-400 hover:bg-slate-800 rounded-lg" onclick="handleDeceAction('Mateo Villavicencio', 'ignorar')">Desestimar</button>
+              </div>
+            </div>
+
+            <!-- Alert Case 2 -->
+            <div class="glass-sm p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-yellow-500/30 bg-yellow-500/5">
+              <div class="space-y-1">
+                <div class="flex items-center gap-2">
+                  <h4 class="font-bold text-sm text-white">Camila Salazar</h4>
+                  <span class="badge badge-yellow">Moderado</span>
+                </div>
+                <p class="text-xs text-muted">Aumento abrupto en consultas de ansiedad al chat de <strong>Wolf AI</strong>.</p>
+                <div class="text-[10px] text-slate-400">Año lectivo: 10mo de Básica "A"</div>
+              </div>
+              <div class="flex gap-2 shrink-0">
+                <button class="btn-cyan py-1.5 px-3 text-xs rounded-lg" onclick="handleDeceAction('Camila Salazar', 'intervenir')">Agendar Reunión</button>
+                <button class="btn-outline py-1.5 px-3 text-xs border-slate-500 text-slate-400 hover:bg-slate-800 rounded-lg" onclick="handleDeceAction('Camila Salazar', 'ignorar')">Desestimar</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Add Mock Student Case -->
+        <div class="glass p-5 space-y-4">
+          <h3 class="font-bold text-sm text-cyan flex items-center gap-2 pb-2 border-b border-white/10">
+            <i data-lucide="plus-circle"></i> Simular nueva alerta
+          </h3>
+          <p class="text-xs text-muted">Agrega un caso simulado para ver cómo funciona el flujo de prevención de bullying y atención emocional:</p>
+          
+          <div class="space-y-3 text-xs">
+            <div>
+              <label class="block text-slate-400 mb-1">Nombre del Estudiante:</label>
+              <input type="text" id="dece-sim-name" placeholder="Ej. Javier Torres" class="w-full glass-sm bg-slate-950/50 p-2 border border-white/10 text-white rounded outline-none">
+            </div>
+            <div>
+              <label class="block text-slate-400 mb-1">Causa de la Alerta:</label>
+              <input type="text" id="dece-sim-cause" placeholder="Ej. Alertas de exclusión de grupo por sus amigos" class="w-full glass-sm bg-slate-950/50 p-2 border border-white/10 text-white rounded outline-none">
+            </div>
+            <div>
+              <label class="block text-slate-400 mb-1">Severidad:</label>
+              <select id="dece-sim-level" class="w-full glass-sm bg-slate-950/50 p-2 border border-white/10 text-slate-200 rounded outline-none">
+                <option value="Crítico">Crítico (Registros muy negativos)</option>
+                <option value="Moderado">Moderado (Señales de alerta medianas)</option>
+              </select>
+            </div>
+            <button class="w-full btn-cyan py-2 text-xs rounded-lg mt-2" onclick="simulateNewDeceAlert()">
+              GENERAR ALERTA EN PANEL
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: TIENDA (SHOP) -->
+    <section class="section" id="page-tienda">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6">
+        <div>
+          <h1 class="text-3xl font-bold text-cyan">Tienda de Premios Wolves</h1>
+          <p class="text-muted">Canjea tus Eight-Coins por premios escolares oficiales y cosméticos para tu perfil.</p>
+        </div>
+        <div class="glass-sm px-4 py-2 mt-3 sm:mt-0 flex items-center gap-2 bg-cyan-dim/10">
+          <span class="text-cyan text-lg">⚡</span>
+          <span class="text-sm font-bold text-white">Tienes:</span>
+          <span class="text-sm font-extrabold text-cyan" id="shop-coins-counter">1250 Coins</span>
+        </div>
+      </div>
+
+      <!-- Shop Grid of Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Reward 1 -->
+        <div class="glass p-4 flex flex-col justify-between space-y-4 glow-hover transition duration-300">
+          <div>
+            <div class="w-full h-32 rounded-xl bg-slate-900 border border-white/5 flex items-center justify-center text-4xl">
+              🎫
+            </div>
+            <h3 class="font-bold text-sm text-white mt-3">Pase de Almuerzo Veloz</h3>
+            <p class="text-[10px] text-muted mt-1">Salta la fila del bar escolar durante una semana completa.</p>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-cyan">⚡ 200 Coins</span>
+            <button class="btn-cyan py-1.5 px-4 text-xs rounded-lg" onclick="purchaseReward('Pase de Almuerzo Veloz', 200)">Canjear</button>
+          </div>
+        </div>
+
+        <!-- Reward 2 -->
+        <div class="glass p-4 flex flex-col justify-between space-y-4 glow-hover transition duration-300">
+          <div>
+            <div class="w-full h-32 rounded-xl bg-slate-900 border border-white/5 flex items-center justify-center text-4xl">
+              👕
+            </div>
+            <h3 class="font-bold text-sm text-white mt-3">Hoodie Oficial de Wolves</h3>
+            <p class="text-[10px] text-muted mt-1">Suéter institucional oficial con el diseño exclusivo de la manada.</p>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-cyan">⚡ 800 Coins</span>
+            <button class="btn-cyan py-1.5 px-4 text-xs rounded-lg" onclick="purchaseReward('Hoodie Oficial de Wolves', 800)">Canjear</button>
+          </div>
+        </div>
+
+        <!-- Reward 3 -->
+        <div class="glass p-4 flex flex-col justify-between space-y-4 glow-hover transition duration-300">
+          <div>
+            <div class="w-full h-32 rounded-xl bg-slate-900 border border-white/5 flex items-center justify-center text-4xl">
+              ☕
+            </div>
+            <h3 class="font-bold text-sm text-white mt-3">Termo Metálico Wolves</h3>
+            <p class="text-[10px] text-muted mt-1">Termo hermético de acero para tus bebidas calientes o frías.</p>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-cyan">⚡ 350 Coins</span>
+            <button class="btn-cyan py-1.5 px-4 text-xs rounded-lg" onclick="purchaseReward('Termo Metálico Wolves', 350)">Canjear</button>
+          </div>
+        </div>
+
+        <!-- Reward 4 -->
+        <div class="glass p-4 flex flex-col justify-between space-y-4 glow-hover transition duration-300">
+          <div>
+            <div class="w-full h-32 rounded-xl bg-slate-900 border border-white/5 flex items-center justify-center text-4xl">
+              🦊
+            </div>
+            <h3 class="font-bold text-sm text-white mt-3">Mascota Cyber-Wolf Premium</h3>
+            <p class="text-[10px] text-muted mt-1">Desbloquea una skin animada premium para tu asistente Wolf AI.</p>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-cyan">⚡ 150 Coins</span>
+            <button class="btn-cyan py-1.5 px-4 text-xs rounded-lg" onclick="purchaseReward('Mascota Cyber-Wolf Premium', 150)">Canjear</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: PROYECCIÓN (ANALYTICS) -->
+    <section class="section" id="page-proyeccion">
+      <h1 class="text-3xl font-bold mb-2 text-cyan">Proyección Emocional</h1>
+      <p class="mb-6 text-muted">Estadísticas y tendencias recopiladas de manera agregada e individual.</p>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        
+        <!-- Individual Chart representation using modern SVG visual styling -->
+        <div class="glass p-5 space-y-4 text-center">
+          <h3 class="font-bold text-sm text-cyan text-left flex items-center gap-2">
+            <i data-lucide="activity"></i> Tendencia de Ánimo Personal (Últimos 10 días)
+          </h3>
+          
+          <!-- Mock SVG Chart Line Graph -->
+          <div class="w-full h-48 bg-slate-950/40 rounded-xl relative p-4 border border-white/5 flex flex-col justify-between">
+            <!-- Grid Lines -->
+            <div class="absolute inset-x-0 top-1/4 border-b border-white/5"></div>
+            <div class="absolute inset-x-0 top-1/2 border-b border-white/5"></div>
+            <div class="absolute inset-x-0 top-3/4 border-b border-white/5"></div>
+            
+            <!-- SVG Vector Lines representing mood upward slope -->
+            <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+              <!-- Grid line markers -->
+              <path d="M0 80 Q 25 60, 50 45 T 100 20" fill="none" stroke="url(#cyan-grad)" stroke-width="4" stroke-linecap="round"/>
+              <path d="M0 80 Q 25 60, 50 45 T 100 20 L 100 100 L 0 100 Z" fill="url(#cyan-fill)" opacity="0.15"/>
+              
+              <defs>
+                <linearGradient id="cyan-grad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#a855f7"/>
+                  <stop offset="100%" stop-color="#00d9ff"/>
+                </linearGradient>
+                <linearGradient id="cyan-fill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#00d9ff"/>
+                  <stop offset="100%" stop-color="#00d9ff" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+            </svg>
+
+            <!-- Chart labels -->
+            <div class="flex justify-between items-start text-[9px] text-muted z-10">
+              <span>Nivel Excelente (Alegre)</span>
+              <span>Muy Bien (Tranquilo)</span>
+            </div>
+            <div class="flex justify-between items-end text-[9px] text-muted z-10 mt-32">
+              <span>Día 1</span>
+              <span>Día 5</span>
+              <span>Hoy</span>
+            </div>
+          </div>
+          <p class="text-xs text-muted text-left">Tu gráfica muestra un <strong>crecimiento constante</strong> en tu estabilidad tras haber integrado los ejercicios diarios de respiración profunda.</p>
+        </div>
+
+        <!-- Global Classroom/Pack statistics -->
+        <div class="glass p-5 space-y-4">
+          <h3 class="font-bold text-sm text-cyan flex items-center gap-2">
+            <i data-lucide="pie-chart"></i> Distribución de Emociones de la Manada
+          </h3>
+          <p class="text-xs text-muted">Datos de tu curso representados de manera confidencial y consolidada:</p>
+          
+          <div class="flex flex-col sm:flex-row items-center gap-6 justify-center">
+            
+            <!-- Beautiful mock circular donut chart using inline Tailwind and circular SVGs -->
+            <div class="relative w-36 h-36 shrink-0">
+              <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                <!-- Alegre 50% -->
+                <circle cx="18" cy="18" r="15.915" fill="transparent" stroke="var(--cyan)" stroke-width="4" stroke-dasharray="50 100" stroke-dashoffset="0"></circle>
+                <!-- Tranquilo 30% -->
+                <circle cx="18" cy="18" r="15.915" fill="transparent" stroke="#10b981" stroke-width="4" stroke-dasharray="30 100" stroke-dashoffset="-50"></circle>
+                <!-- Ansioso/Triste 20% -->
+                <circle cx="18" cy="18" r="15.915" fill="transparent" stroke="#f59e0b" stroke-width="4" stroke-dasharray="20 100" stroke-dashoffset="-80"></circle>
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <span class="text-xs text-muted uppercase">Estado</span>
+                <span class="text-sm font-extrabold text-cyan">Positivo</span>
+              </div>
+            </div>
+
+            <!-- Legends -->
+            <div class="space-y-2 text-xs">
+              <div class="flex items-center gap-2">
+                <span class="inline-block w-3.5 h-3.5 rounded bg-cyan"></span>
+                <span class="text-white">Alegre (50%)</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="inline-block w-3.5 h-3.5 rounded bg-emerald-500"></span>
+                <span class="text-white">Tranquilo (30%)</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="inline-block w-3.5 h-3.5 rounded bg-amber-500"></span>
+                <span class="text-white">Ansioso o Triste (20%)</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: MI MANADA (EQUIPO) -->
+    <section class="section" id="page-equipo">
+      <div class="flex flex-col md:flex-row md:items-center justify-between mb-6">
+        <div>
+          <h1 class="text-3xl font-bold text-cyan">Mi Manada (Curso)</h1>
+          <p class="text-muted">Acompañamiento colectivo para evitar la discriminación y promover la integración escolar.</p>
+        </div>
+        <div class="mt-3 md:mt-0 glass-sm px-4 py-2 flex items-center gap-2">
+          <span class="text-xs text-muted">Líder del mes:</span>
+          <span class="text-xs font-bold text-cyan">🐺 Lobo de Oro</span>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        
+        <!-- List of pack members and emotional status (Anonymous mock list to avoid exposure) -->
+        <div class="glass p-5 md:col-span-2 space-y-4">
+          <h3 class="font-bold text-sm text-cyan flex items-center gap-2 border-b border-white/10 pb-2">
+            <i data-lucide="shield-check"></i> Monitoreo de Convivencia Sana
+          </h3>
+          <p class="text-xs text-muted">Cada estudiante utiliza pseudónimos protectores o iniciales para proteger la identidad, garantizando un ambiente seguro.</p>
+          
+          <div class="space-y-2">
+            
+            <div class="glass-sm p-3 flex justify-between items-center text-xs">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-cyan-900/40 flex items-center justify-center font-bold text-cyan">A1</div>
+                <span class="text-white">Alfa Veloz (Tú)</span>
+              </div>
+              <span class="badge badge-green">● Estable</span>
+            </div>
+
+            <div class="glass-sm p-3 flex justify-between items-center text-xs">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center font-bold text-white">M3</div>
+                <span class="text-white">Lobo Curioso</span>
+              </div>
+              <span class="badge badge-green">● Estable</span>
+            </div>
+
+            <div class="glass-sm p-3 flex justify-between items-center text-xs">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center font-bold text-white">X9</div>
+                <span class="text-white">Lobo Errante</span>
+              </div>
+              <span class="badge badge-yellow">● Requiere apoyo</span>
+            </div>
+
+            <div class="glass-sm p-3 flex justify-between items-center text-xs">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center font-bold text-white">T2</div>
+                <span class="text-white">Zorro Astuto</span>
+              </div>
+              <span class="badge badge-green">● Estable</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Social anti-bullying support system info -->
+        <div class="glass p-5 space-y-4">
+          <h3 class="font-bold text-sm text-cyan flex items-center gap-2 border-b border-white/10 pb-2">
+            <i data-lucide="heart-handshake"></i> Herramientas de Empatía
+          </h3>
+          <p class="text-xs text-muted">¿Has notado que un compañero de clase está siendo discriminado, excluido o sufre acoso escolar?</p>
+          
+          <button class="w-full btn-cyan py-3 text-xs flex justify-center items-center gap-2" onclick="openReportModal()">
+            <i data-lucide="alert-triangle"></i> REPORTAR ACOSO (CONFIDENCIAL)
+          </button>
+          
+          <p class="text-[10px] text-muted text-center italic">Tu reporte llega únicamente al departamento de consejería DECE para actuar con empatía y absoluto secreto profesional.</p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- TOAST NOTIFICATION POPUP -->
+  <div id="toast" class="toast flex items-center gap-2">
+    <span id="toast-text">¡Acción realizada con éxito!</span>
+  </div>
+
+  <!-- ACOSO REPORT MODAL (CONFIDENCIAL) -->
+  <div id="report-modal" class="fixed inset-0 z-50 flex items-center justify-center modal-backdrop hidden">
+    <div class="glass p-6 max-w-md w-full mx-4 space-y-4 border border-rose-500/30">
+      <div class="flex justify-between items-center border-b border-white/10 pb-2">
+        <h3 class="font-bold text-base text-rose-400 flex items-center gap-2">
+          <i data-lucide="shield-alert"></i> Reportar Acoso Escolar
+        </h3>
+        <button class="text-slate-400 hover:text-white" onclick="closeReportModal()">&times;</button>
+      </div>
+      <p class="text-xs text-muted">Describe de manera confidencial la situación observada. El personal de DECE intervendrá con prudencia.</p>
+      
+      <div class="space-y-2 text-xs">
+        <div>
+          <label class="block text-slate-300 mb-1">Nombre de la persona afectada (opcional):</label>
+          <input type="text" id="report-victim" placeholder="Dejar en blanco si es anónimo" class="w-full glass-sm bg-slate-950 p-2.5 border border-white/10 text-white rounded outline-none">
+        </div>
+        <div>
+          <label class="block text-slate-300 mb-1">¿Qué está sucediendo? (Exclusión, insultos, agresión física, etc.):</label>
+          <textarea id="report-details" rows="3" placeholder="Describe los detalles de forma clara..." class="w-full glass-sm bg-slate-950 p-2.5 border border-white/10 text-white rounded outline-none"></textarea>
+        </div>
+      </div>
+
+      <div class="flex gap-2 justify-end pt-2 text-xs">
+        <button class="btn-outline py-2 px-4 rounded-lg" onclick="closeReportModal()">Cancelar</button>
+        <button class="btn-cyan py-2 px-4 rounded-lg bg-rose-500 text-white hover:bg-rose-600 border-none" onclick="submitAcosoReport()">Enviar Reporte</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Platform Core Logic Script -->
+  <script>
+    // State storage variables
+    let coins = 1250;
+    let registeredToday = false;
+    let negativeMoodCount = 0;
+    let completedChallengesList = [];
+    
+    // Web Audio Synthesizer for Retro Game Style Audio Chimes (Self-contained)
+    function playSound(type) {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        const now = ctx.currentTime;
+        
+        if (type === 'success') {
+          // Coin sound chord
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, now); // C5
+          osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+          osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+          osc.start(now);
+          osc.stop(now + 0.45);
+        } else if (type === 'alert') {
+          // Alarm sound
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(880, now); // A5
+          osc.frequency.setValueAtTime(440, now + 0.15); // A4
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'breath') {
+          // Gentle white noise style hum
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(220, now);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 3);
+          osc.start(now);
+          osc.stop(now + 3);
+        }
+      } catch (e) {
+        console.warn("Web Audio API blocked or unsupported:", e);
+      }
+    }
+
+    // View Routing System
+    function navigate(sectionId) {
+      document.querySelectorAll('.section').forEach(sec => {
+        sec.classList.remove('active');
+      });
+      const activeSection = document.getElementById('page-' + sectionId);
+      if (activeSection) {
+        activeSection.classList.add('active');
+      }
+
+      document.querySelectorAll('.sidebar-link').forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('data-page') === sectionId) {
+          link.classList.add('active');
+        }
+      });
+      
+      // Auto-close sidebar on mobile
+      if (window.innerWidth <= 768) {
+        document.getElementById('sidebar').classList.remove('open');
+      }
+    }
+
+    // Mobile Sidebar Drawer toggler
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('open');
+    }
+
+    // Custom non-blocking custom Toast Alerts
+    function triggerToast(text, isAlert = false) {
+      const toast = document.getElementById('toast');
+      const toastText = document.getElementById('toast-text');
+      
+      toastText.innerText = text;
+      
+      if (isAlert) {
+        toast.style.background = 'linear-gradient(135deg, #ff4757, #ff6b81)';
+        playSound('alert');
+      } else {
+        toast.style.background = 'linear-gradient(135deg, #00d9ff, #00b8d4)';
+        playSound('success');
+      }
+      
+      toast.style.transform = 'translateY(0)';
+      toast.style.opacity = '1';
+      
+      setTimeout(() => {
+        toast.style.transform = 'translateY(100px)';
+        toast.style.opacity = '0';
+      }, 3500);
+    }
+
+    // Update Coin balances globally
+    function addCoins(amount) {
+      coins += amount;
+      document.getElementById('topbar-coins').innerText = coins.toLocaleString();
+      document.getElementById('stat-coins').innerText = coins.toLocaleString();
+      document.getElementById('shop-coins-counter').innerText = coins.toLocaleString() + ' Coins';
+      document.getElementById('wallet-balance-big').innerText = coins.toLocaleString();
+    }
+
+    function saveMoodCheck() {
+      const selectedRadio = document.querySelector('input[name="emotion"]:checked');
+      if (!selectedRadio) {
+        triggerToast("Por favor, selecciona una emoción primero.", true);
+        return;
+      }
+      
+      const moodValue = selectedRadio.value;
+      
+      if (registeredToday) {
+        triggerToast("Ya has registrado tu emoción de hoy. ¡Gracias por participar!", true);
+        return;
+      }
+
+      // Check if emotion registered is negative
+      if (moodValue === 'triste' || moodValue === 'ansioso' || moodValue === 'enojado') {
+        negativeMoodCount++;
+      } else {
+        negativeMoodCount = 0; // reset on positive emotion
+      }
+
+      registeredToday = true;
+      addCoins(2); // Gained daily award
+      
+      // Update visual calendar representation
+      const wedCard = document.querySelector('[data-day="2"]');
+      if (wedCard) {
+        const emojiMap = {
+          alegre: '😊',
+          tranquilo: '😌',
+          triste: '😢',
+          ansioso: '😟',
+          enojado: '😠'
+        };
+        wedCard.querySelector('.status-emoji').innerText = emojiMap[moodValue];
+        wedCard.querySelector('.status-emoji').style.color = 'var(--cyan)';
+        wedCard.querySelector('span:last-child').innerText = 'Registrado ✓';
+        wedCard.querySelector('span:last-child').className = 'text-[10px] text-emerald-400 font-bold';
+      }
+
+      triggerToast("¡Emoción registrada! +2 Eight-Coins añadidas.");
+
+      // Check DECE preventative trigger if student is in continuous negative loops
+      if (negativeMoodCount >= 3) {
+        document.getElementById('dece-alert').classList.remove('hidden');
+        document.getElementById('dece-stat-active').innerText = "3"; // Add alert on administrative statistics
+        
+        // Push a simulated case alert dynamically onto DECE alert dashboard list
+        const list = document.getElementById('dece-alerts-list');
+        const alertHtml = `
+          <div class="glass-sm p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-rose-500/30 bg-rose-500/5">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <h4 class="font-bold text-sm text-white">Estudiante Actual (Tú)</h4>
+                <span class="badge badge-red">Crítico</span>
+              </div>
+              <p class="text-xs text-muted">Ha registrado 3 emociones de vulnerabilidad emocional seguidas.</p>
+              <div class="text-[10px] text-slate-400">Año lectivo: 1ro de Bachillerato "A"</div>
+            </div>
+            <div class="flex gap-2 shrink-0">
+              <button class="btn-cyan py-1.5 px-3 text-xs rounded-lg" onclick="handleDeceAction('Estudiante Actual', 'intervenir')">Agendar Reunión</button>
+            </div>
+          </div>
+        `;
+        list.insertAdjacentHTML('afterbegin', alertHtml);
+      }
+    }
+
+    function selectPromptChip(promptText) {
+      document.getElementById('chat-input').value = promptText;
+    }
+
+    function sendChatMessage() {
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      appendChatMessage(text, true);
+      input.value = '';
+
+      // Mock processing state
+      setTimeout(() => {
+        let response = "";
+        const lowerText = text.toLowerCase();
+
+        if (lowerText.includes('estrés') || lowerText.includes('estresado') || lowerText.includes('exámenes')) {
+          response = "Lamento mucho que te sientas estresado. Te recomiendo tomar un momento para ti. ¿Quieres que hagamos un <strong>ejercicio de respiración cuadrada 4-4-4</strong>? Haz clic en el botón de respiración para calmar el ritmo de tu mente.";
+        } else if (lowerText.includes('ansiedad') || lowerText.includes('ansioso') || lowerText.includes('nervios')) {
+          response = "La ansiedad puede sentirse muy abrumadora. Recuerda que no estás solo y que esto pasará. Intenta apoyar tu planta de los pies en el suelo, respira hondo y busca un vaso de agua fresca. Escribir lo que sientes también libera tensión.";
+        } else if (lowerText.includes('triste') || lowerText.includes('tristeza') || lowerText.includes('desanimado')) {
+          response = "Entiendo perfectamente que haya momentos grises. Está bien sentirse cansado o desanimado. Tómate el tiempo necesario. ¿Hay algún amigo o tutor en el colegio en quien confíes para contarle cómo te sientes? Tu manada te apoya.";
+        } else if (lowerText.includes('compañero') || lowerText.includes('pelea') || lowerText.includes('bullying') || lowerText.includes('excluido')) {
+          response = "Ninguna agresión, discriminación o aislamiento es aceptable. Tu bienestar es clave. Recuerda que puedes realizar un <strong>reporte de convivencia 100% confidencial</strong> a través de nuestra pestaña 'Mi Manada' para que el equipo del DECE actúe discretamente.";
+        } else {
+          response = "Gracias por compartir eso conmigo. Reconocer lo que te pasa por la cabeza es el primer paso para fortalecer tu inteligencia emocional. Te animo a que sigas adelante, ¡tú puedes superar los retos de esta semana!";
+        }
+
+        appendChatMessage(response, false);
+      }, 1000);
+    }
+
+    function appendChatMessage(message, isUser) {
+      const chatArea = document.getElementById('chat-area');
+      const bubble = document.createElement('div');
+      bubble.className = `chat-bubble ${isUser ? 'chat-user' : 'chat-bot'}`;
+      bubble.innerHTML = message;
+      chatArea.appendChild(bubble);
+      chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    // Breathing square guide routine variables
+    let breathingInterval;
+    function startBreathing() {
+      document.getElementById('breathing-exercise').classList.remove('hidden');
+      const animContainer = document.getElementById('breathing-anim-container');
+      
+      let stage = 0; // 0: inhale, 1: hold, 2: exhale
+      let seconds = 4;
+      
+      playSound('breath');
+
+      breathingInterval = setInterval(() => {
+        seconds--;
+        if (seconds < 0) {
+          stage = (stage + 1) % 3;
+          seconds = 4;
+        }
+
+        const stages = [
+          { text: "¡Inhala!", class: "breathing-inhale" },
+          { text: "Mantén el aire...", class: "breathing-hold" },
+          { text: "Exhala despacio...", class: "breathing-exhale" }
+        ];
+
+        document.getElementById('breathing-stage').innerText = stages[stage].text;
+        document.getElementById('breathing-counter').innerText = seconds || "0";
+        
+        animContainer.className = "my-8 " + stages[stage].class;
+      }, 1000);
+    }
+
+    function stopBreathing() {
+      clearInterval(breathingInterval);
+      document.getElementById('breathing-exercise').classList.add('hidden');
+      triggerToast("¡Bien hecho! Excelente ejercicio para recargar tu concentración.");
+      addCoins(15);
+    }
+
+    function showAnimoMessage() {
+      const messages = [
+        "🐺 'No tienes que controlar tus pensamientos; solo debes impedir que ellos te controlen a ti.' — Eres fuerte.",
+        "✨ Un mal día no equivale a una mala vida. Confía en el proceso, tu manada está para cuidarte.",
+        "🦁 Cada paso pequeño, por insignificante que parezca, te acerca a un estado de paz. ¡Buen trabajo hoy!"
+      ];
+      const random = messages[Math.floor(Math.random() * messages.length)];
+      appendChatMessage(random, false);
+    }
+
+    function completeChallenge(id, reward) {
+      if (completedChallengesList.includes(id)) {
+        triggerToast("Ya has completado este reto hoy.", true);
+        return;
+      }
+
+      completedChallengesList.push(id);
+      addCoins(reward);
+
+      // Disable visual representation of challenge card
+      const card = document.getElementById('challenge-card-' + id);
+      if (card) {
+        card.style.opacity = '0.6';
+        const btn = card.querySelector('button');
+        if (btn) {
+          btn.innerText = '✓ Completado';
+          btn.disabled = true;
+          btn.className = 'w-full btn-outline py-1.5 px-3 text-xs rounded-lg mt-2 cursor-not-allowed';
+        }
+      }
+
+      // Update counters
+      const total = completedChallengesList.length;
+      document.getElementById('challenges-count').innerText = `${total + 1} / 4 Completados`;
+      document.getElementById('challenges-progress').style.width = `${((total + 1) / 4) * 100}%`;
+
+      triggerToast(`¡Desafío completado con éxito! +${reward} Eight-Coins añadidas.`);
+    }
+
+    function purchaseReward(name, price) {
+      if (coins < price) {
+        triggerToast("Saldo insuficiente de Eight-Coins. Sigue registrando tus emociones y completando retos.", true);
+        return;
+      }
+
+      addCoins(-price);
+      triggerToast(`¡Canje exitoso! Adquiriste '${name}'. El cupón ha sido guardado en tu Wallet.`);
+      
+      // Dynamically add to transactional history logs
+      const historyTable = document.getElementById('wallet-history-rows');
+      const rowHtml = `
+        <tr>
+          <td class="font-semibold text-rose-400">Canje</td>
+          <td>Hace un momento</td>
+          <td>Canje de Premio: ${name}</td>
+          <td><span class="badge badge-yellow">Procesando</span></td>
+          <td class="text-right text-rose-400 font-bold">-${price} Coins</td>
+        </tr>
+      `;
+      historyTable.insertAdjacentHTML('afterbegin', rowHtml);
+    }
+
+    function simulateNewDeceAlert() {
+      const name = document.getElementById('dece-sim-name').value.trim();
+      const cause = document.getElementById('dece-sim-cause').value.trim();
+      const level = document.getElementById('dece-sim-level').value;
+
+      if (!name || !cause) {
+        triggerToast("Por favor completa los campos para la simulación.", true);
+        return;
+      }
+
+      const list = document.getElementById('dece-alerts-list');
+      const badgeClass = level === 'Crítico' ? 'badge-red' : 'badge-yellow';
+      
+      const newAlertHtml = `
+        <div class="glass-sm p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-rose-500/30 bg-rose-500/5">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <h4 class="font-bold text-sm text-white">${name}</h4>
+              <span class="badge ${badgeClass}">${level}</span>
+            </div>
+            <p class="text-xs text-muted">${cause}</p>
+            <div class="text-[10px] text-slate-400">Año lectivo: Curso Simulado</div>
+          </div>
+          <div class="flex gap-2 shrink-0">
+            <button class="btn-cyan py-1.5 px-3 text-xs rounded-lg" onclick="handleDeceAction('${name}', 'intervenir')">Agendar Reunión</button>
+          </div>
+        </div>
+      `;
+      list.insertAdjacentHTML('afterbegin', newAlertHtml);
+      
+      // Update statistics
+      const alertStat = document.getElementById('dece-stat-active');
+      alertStat.innerText = parseInt(alertStat.innerText) + 1;
+      
+      triggerToast("¡Simulación de alerta enviada al Panel DECE!");
+      
+      // Clear forms
+      document.getElementById('dece-sim-name').value = '';
+      document.getElementById('dece-sim-cause').value = '';
+    }
+
+    function handleDeceAction(studentName, action) {
+      if (action === 'intervenir') {
+        triggerToast(`Se ha agendado una cita confidencial con ${studentName}. Notificación enviada.`);
+      } else if (action === 'ignorar') {
+        triggerToast(`Se ha archivado la alerta de ${studentName}.`);
+      }
+    }
+
+    function alertDeceDirect() {
+      triggerToast("El departamento de DECE ha recibido una señal directa de auxilio. Un profesional se comunicará contigo de inmediato de forma muy cuidadosa y discreta. Respira hondo.");
+      document.getElementById('dece-stat-active').innerText = parseInt(document.getElementById('dece-stat-active').innerText) + 1;
+    }
+
+    function openReportModal() {
+      document.getElementById('report-modal').classList.remove('hidden');
+    }
+
+    function closeReportModal() {
+      document.getElementById('report-modal').classList.add('hidden');
+    }
+
+    function submitAcosoReport() {
+      const victim = document.getElementById('report-victim').value.trim() || "Anónimo";
+      const details = document.getElementById('report-details').value.trim();
+
+      if (!details) {
+        triggerToast("Por favor, ingresa los detalles del informe.", true);
+        return;
+      }
+
+      // Send to counsel mock center
+      const list = document.getElementById('dece-alerts-list');
+      const newAlertHtml = `
+        <div class="glass-sm p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-rose-500/30 bg-rose-500/5">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <h4 class="font-bold text-sm text-white">Reporte de Convivencia</h4>
+              <span class="badge badge-red">Crítico</span>
+            </div>
+            <p class="text-xs text-muted"><strong>Afectado:</strong> ${victim}. <strong>Detalles:</strong> ${details}</p>
+            <div class="text-[10px] text-slate-400">Origen: Denuncia Anónima de Alumno</div>
+          </div>
+          <div class="flex gap-2 shrink-0">
+            <button class="btn-cyan py-1.5 px-3 text-xs rounded-lg" onclick="handleDeceAction('Buzón Convivencia', 'intervenir')">Iniciar investigación</button>
+          </div>
+        </div>
+      `;
+      list.insertAdjacentHTML('afterbegin', newAlertHtml);
+
+      // Stat adjustment
+      const alertStat = document.getElementById('dece-stat-active');
+      alertStat.innerText = parseInt(alertStat.innerText) + 1;
+
+      closeReportModal();
+      triggerToast("¡Tu reporte ha sido enviado confidencialmente al DECE! Gracias por proteger a la manada.");
+      
+      // Clear inputs
+      document.getElementById('report-victim').value = '';
+      document.getElementById('report-details').value = '';
+    }
+
+    // Onload Setup
+    window.onload = function() {
+      // Refresh Lucide Icons vector rendering
+      lucide.createIcons();
+    };
+  </script>
+</body>
+</html>
 
